@@ -187,12 +187,18 @@ The client will start on: **`http://localhost:5173`**
 
 ## 🔑 Demo & Evaluator Accounts
 
-For seamless evaluation, default demo accounts are pre-seeded in the database:
+> [!WARNING]
+> **DEVELOPMENT & EVALUATION ONLY**: The pre-seeded demo accounts (`admin@oasispizza.com` and `customer@oasispizza.com`) and default passwords (`AdminPassword@123` / `CustomerPassword@123`) are provided strictly for local development, academic review, and local evaluation. In any staging or production deployment, NEVER use default credentials. Always create administrative accounts using strong, unique passwords and custom administrative emails.
+
+For local evaluation, default demo accounts can be populated via `npm run seed`:
 
 | Role | Email | Password | Quick-Fill in UI |
 |---|---|---|---|
 | **Administrator** | `admin@oasispizza.com` | `AdminPassword@123` | Click **"Admin Demo"** on Login page |
 | **Customer** | `customer@oasispizza.com` | `CustomerPassword@123` | Click **"Customer Demo"** on Login page |
+
+> [!NOTE]
+> **Safe, Idempotent Seeding**: The seed script (`npm run seed`) is completely non-destructive. It uses safe upserts to insert only missing demo items without dropping collections or modifying existing user records, custom user passwords, or inventory adjustments.
 
 > **Note**: Public user registration will **strictly assign** `role: 'customer'`. Admin privileges can only be assigned by administrators or seeded via the server database.
 

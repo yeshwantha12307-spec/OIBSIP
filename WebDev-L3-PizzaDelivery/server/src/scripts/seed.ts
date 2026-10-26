@@ -1,46 +1,101 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { connectDB } from '../config/db.js';
 import { User } from '../models/User.js';
-import { Inventory } from '../models/Inventory.js';
+import { Inventory, IInventory } from '../models/Inventory.js';
 import { Pizza } from '../models/Pizza.js';
 import { InventoryLog } from '../models/InventoryLog.js';
-import { InventoryAlert } from '../models/InventoryAlert.js';
 
-export const runSeed = async () => {
-  console.log('[Seed] Starting database seed...');
+interface SeedResult {
+  usersAdded: number;
+  usersPreserved: number;
+  inventoryAdded: number;
+  inventoryPreserved: number;
+  pizzasAdded: number;
+  pizzasPreserved: number;
+}
 
-  // Clear existing collections
-  await User.deleteMany({});
-  await Inventory.deleteMany({});
-  await Pizza.deleteMany({});
-  await InventoryLog.deleteMany({});
-  await InventoryAlert.deleteMany({});
+/**
+ * Safe, idempotent database seeder.
+ * - Never drops or deletes collections.
+ * - Never overwrites existing user passwords, roles, or custom accounts.
+ * - Preserves existing inventory quantities and thresholds.
+ * - Inserts only missing demo accounts, ingredients, and craft menu pizzas.
+ */
+export const runSeed = async (): Promise<SeedResult> => {
+  console.log('\n[Seed] Starting safe, idempotent database seed...');
 
-  // 1. Create Default Admin & Customer accounts
-  const adminPasswordHash = await bcrypt.hash('AdminPassword@123', 12);
-  const customerPasswordHash = await bcrypt.hash('CustomerPassword@123', 12);
+  const result: SeedResult = {
+    usersAdded: 0,
+    usersPreserved: 0,
+    inventoryAdded: 0,
+    inventoryPreserved: 0,
+    pizzasAdded: 0,
+    pizzasPreserved: 0,
+  };
 
-  const admin = await User.create({
-    name: 'Oasis Administrator',
-    email: 'admin@oasispizza.com',
-    passwordHash: adminPasswordHash,
-    role: 'admin',
-    isVerified: true,
-  });
+  // 1. Safe Demo Users Upsert (Never overwrite existing user passwords or data)
+  const demoUsers = [
+    {
+      name: 'Oasis Administrator',
+      email: 'admin@oasispizza.com',
+      rawPassword: 'AdminPassword@123',
+      role: 'admin' as const,
+      isVerified: true,
+    },
+    {
+      name: 'Sophia Rossi',
+      email: 'customer@oasispizza.com',
+      rawPassword: 'CustomerPassword@123',
+      role: 'customer' as const,
+      isVerified: true,
+    },
+  ];
 
-  const customer = await User.create({
-    name: 'Sophia Rossi',
-    email: 'customer@oasispizza.com',
-    passwordHash: customerPasswordHash,
-    role: 'customer',
-    isVerified: true,
-  });
+  for (const demoUser of demoUsers) {
+    const existingUser = await User.findOne({ email: demoUser.email.toLowerCase() });
+    if (!existingUser) {
+      const passwordHash = await bcrypt.hash(demoUser.rawPassword, 12);
+      await User.create({
+        name: demoUser.name,
+        email: demoUser.email.toLowerCase(),
+        passwordHash,
+        role: demoUser.role,
+        isVerified: demoUser.isVerified,
+      });
+      console.log(`[Seed] Inserted missing demo ${demoUser.role}: ${demoUser.email}`);
+      result.usersAdded++;
+    } else {
+      console.log(`[Seed] Preserved existing user account: ${demoUser.email} (Untouched)`);
+      result.usersPreserved++;
+    }
+  }
 
-  console.log(`[Seed] Created Admin: ${admin.email} and Customer: ${customer.email}`);
+  // Helper for inventory insertion without overwriting existing stock levels
+  const ensureInventoryItem = async (itemData: Partial<IInventory>): Promise<IInventory> => {
+    let item = await Inventory.findOne({ name: itemData.name });
+    if (!item) {
+      item = await Inventory.create(itemData);
+      await InventoryLog.create({
+        inventoryId: item._id,
+        ingredientName: item.name,
+        changeAmount: item.availableQuantity,
+        previousQuantity: 0,
+        newQuantity: item.availableQuantity,
+        reason: 'initial_seed',
+        performedBy: 'SYSTEM',
+        notes: `Initial stock seeded at ${item.availableQuantity} ${item.unit}`,
+      });
+      console.log(`[Seed] Inserted missing inventory item: ${item.name} (${item.availableQuantity} ${item.unit})`);
+      result.inventoryAdded++;
+    } else {
+      console.log(`[Seed] Preserved existing inventory item: ${item.name} (${item.availableQuantity} ${item.unit})`);
+      result.inventoryPreserved++;
+    }
+    return item;
+  };
 
-  // 2. Create 5 Pizza Bases
-  const bases = await Inventory.create([
+  // 2. Pizza Bases (5 Items)
+  const basesData: Partial<IInventory>[] = [
     {
       name: 'Classic Hand-Tossed',
       category: 'base',
@@ -96,10 +151,15 @@ export const runSeed = async () => {
       description: 'Light, naturally gluten-free cauliflower crust baked to golden perfection.',
       isVegetarian: true,
     },
-  ]);
+  ];
 
-  // 3. Create 5 Sauces
-  const sauces = await Inventory.create([
+  const bases: IInventory[] = [];
+  for (const baseData of basesData) {
+    bases.push(await ensureInventoryItem(baseData));
+  }
+
+  // 3. Pizza Sauces (5 Items)
+  const saucesData: Partial<IInventory>[] = [
     {
       name: 'Zesty San Marzano Marinara',
       category: 'sauce',
@@ -155,10 +215,15 @@ export const runSeed = async () => {
       description: 'Spicy chili fusion sauce offering a bold kick and bright citrus undertones.',
       isVegetarian: true,
     },
-  ]);
+  ];
 
-  // 4. Create Cheeses
-  const cheeses = await Inventory.create([
+  const sauces: IInventory[] = [];
+  for (const sauceData of saucesData) {
+    sauces.push(await ensureInventoryItem(sauceData));
+  }
+
+  // 4. Cheeses (4 Items)
+  const cheesesData: Partial<IInventory>[] = [
     {
       name: 'Whole Milk Mozzarella',
       category: 'cheese',
@@ -203,10 +268,15 @@ export const runSeed = async () => {
       description: 'Cultured cashew nut cheese with a smooth melt, 100% dairy-free and plant-based.',
       isVegetarian: true,
     },
-  ]);
+  ];
 
-  // 5. Create Vegetables & Toppings
-  const veggies = await Inventory.create([
+  const cheeses: IInventory[] = [];
+  for (const cheeseData of cheesesData) {
+    cheeses.push(await ensureInventoryItem(cheeseData));
+  }
+
+  // 5. Veggies & Toppings (9 Items)
+  const veggiesData: Partial<IInventory>[] = [
     {
       name: 'Roasted Bell Peppers',
       category: 'veggie',
@@ -306,23 +376,14 @@ export const runSeed = async () => {
       description: 'Soft cottage cheese cubes marinated in aromatic spices.',
       isVegetarian: true,
     },
-  ]);
+  ];
 
-  // Log initial seeds in InventoryLog
-  for (const item of [...bases, ...sauces, ...cheeses, ...veggies]) {
-    await InventoryLog.create({
-      inventoryId: item._id,
-      ingredientName: item.name,
-      changeAmount: item.availableQuantity,
-      previousQuantity: 0,
-      newQuantity: item.availableQuantity,
-      reason: 'initial_seed',
-      performedBy: 'SYSTEM',
-      notes: `Initial stock seeded at ${item.availableQuantity} ${item.unit}`,
-    });
+  const veggies: IInventory[] = [];
+  for (const veggieData of veggiesData) {
+    veggies.push(await ensureInventoryItem(veggieData));
   }
 
-  // Helper lookups
+  // Lookup helper references for craft pizzas
   const classicBase = bases.find((b) => b.name === 'Classic Hand-Tossed')!;
   const thinBase = bases.find((b) => b.name === 'Italian Thin Crust')!;
   const burstBase = bases.find((b) => b.name === 'Double Cheese Burst')!;
@@ -348,8 +409,8 @@ export const runSeed = async () => {
   const paneer = veggies.find((v) => v.name.includes('Paneer'))!;
   const onion = veggies.find((v) => v.name.includes('Onions'))!;
 
-  // 6. Create 6 Signature Craft Pizzas
-  await Pizza.create([
+  // 6. Safe Craft Menu Pizzas (6 Items)
+  const craftPizzas = [
     {
       name: 'Margherita Superiore',
       description: 'Wood-fired sourdough crust topped with sweet San Marzano marinara, fresh Bocconcini mozzarella, aromatic basil, and sun-dried tomatoes.',
@@ -428,9 +489,22 @@ export const runSeed = async () => {
       isAvailable: true,
       tags: ['Smoky BBQ', 'Spicy'],
     },
-  ]);
+  ];
 
-  console.log(`[Seed] Seeded 5 bases, 5 sauces, 4 cheeses, 9 vegetables, and 6 signature craft pizzas!`);
+  for (const pizzaData of craftPizzas) {
+    const existingPizza = await Pizza.findOne({ name: pizzaData.name });
+    if (!existingPizza) {
+      await Pizza.create(pizzaData);
+      console.log(`[Seed] Inserted missing craft pizza: ${pizzaData.name}`);
+      result.pizzasAdded++;
+    } else {
+      console.log(`[Seed] Preserved existing craft pizza: ${pizzaData.name}`);
+      result.pizzasPreserved++;
+    }
+  }
+
+  console.log(`\n[Seed Summary] Users: +${result.usersAdded} new / ${result.usersPreserved} preserved | Inventory: +${result.inventoryAdded} new / ${result.inventoryPreserved} preserved | Pizzas: +${result.pizzasAdded} new / ${result.pizzasPreserved} preserved.`);
+  return result;
 };
 
 if (process.argv[1]?.includes('seed')) {

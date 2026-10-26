@@ -88,15 +88,6 @@ export const verifyRazorpaySignature = (
     return false;
   }
 
-  // Developer mock bypass ONLY when specifically marked and placeholder key is in use
-  if (
-    env.NODE_ENV !== 'production' &&
-    env.RAZORPAY_KEY_SECRET.includes('placeholder') &&
-    razorpayOrderId.startsWith('order_test_') &&
-    razorpaySignature.startsWith('mock_sig_')
-  ) {
-    return true;
-  }
 
   const payload = `${razorpayOrderId}|${razorpayPaymentId}`;
   const expectedSignature = crypto
