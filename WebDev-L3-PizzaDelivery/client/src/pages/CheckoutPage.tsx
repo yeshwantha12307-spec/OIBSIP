@@ -1,0 +1,401 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import confetti from 'canvas-confetti';
+import {
+  ShieldCheck,
+  CreditCard,
+  MapPin,
+  Phone,
+  FileText,
+  AlertCircle,
+  Truck,
+  CheckCircle2,
+} from 'lucide-react';
+import { useCart } from '../context/CartContext.js';
+import { useAuth } from '../context/AuthContext.js';
+import { useToast } from '../context/ToastContext.js';
+import { api } from '../api/client.js';
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+export const CheckoutPage: React.FC = () => {
+  const { cart, subtotal, tax, deliveryFee, grandTotal, clearCart } = useCart();
+  const { user, isAuthenticated } = useAuth();
+  const { showToast } = useToast();
+  const navigate = useNavigate();
+
+  const [deliveryAddress, setDeliveryAddress] = useState({
+    street: '',
+    city: 'Mumbai',
+    state: 'Maharashtra',
+    postalCode: '',
+    phone: '',
+    instructions: '',
+  });
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  if (cart.length === 0) {
+    navigate('/cart');
+    return null;
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setDeliveryAddress((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const fireSuccessConfetti = () => {
+    confetti({
+      particleCount: 120,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f'],
+    });
+  };
+
+  const handlePayWithRazorpay = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!deliveryAddress.street.trim() || !deliveryAddress.phone.trim() || !deliveryAddress.postalCode.trim()) {
+      showToast('Please fill in your delivery street, phone number, and postal code.', 'warning');
+      return;
+    }
+
+    if (!isAuthenticated) {
+      showToast('Please sign in or register to complete your order.', 'info');
+      navigate('/login', { state: { from: '/checkout' } });
+      return;
+    }
+
+    setIsProcessing(true);
+    setErrorMessage(null);
+
+    try {
+      // 1. Prepare raw items for server pricing verification and stock validation
+      const rawItems = cart.map((item) => ({
+        type: item.type,
+        pizzaId: item.pizzaId,
+        name: item.name,
+        baseId: item.base.id,
+        sauceId: item.sauce.id,
+        cheeseId: item.cheese.id,
+        veggieIds: item.veggies.map((v) => v.id),
+        quantity: item.quantity,
+      }));
+
+      // 2. Call backend to create Order and Razorpay Order
+      const orderRes = await api.post('/orders', {
+        rawItems,
+        deliveryAddress,
+        notes: deliveryAddress.instructions,
+      });
+
+      if (!orderRes.success) {
+        throw new Error(orderRes.message || 'Failed to initialize order');
+      }
+
+      const { order, razorpay } = orderRes;
+
+      // 3. Check if window.Razorpay SDK is loaded
+      if (typeof window.Razorpay === 'undefined') {
+        throw new Error('Razorpay payment gateway SDK failed to load. Please check your internet connection.');
+      }
+
+      // 4. Initialize Razorpay Checkout Modal
+      const options = {
+        key: razorpay.keyId,
+        amount: razorpay.amount,
+        currency: razorpay.currency || 'INR',
+        name: 'Oasis Pizza',
+        description: `Order #${order.orderNumber} - Artisan Wood-Fired Pizza`,
+        image: '/pizza-icon.svg',
+        order_id: razorpay.orderId,
+        handler: async function (response: any) {
+          try {
+            showToast('Verifying payment signature with secure server...', 'info');
+
+            // 5. Backend verification of HMAC SHA-256 signature and atomic inventory deduction
+            const verifyRes = await api.post('/payments/verify', {
+              orderId: order._id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            });
+
+            if (verifyRes.success) {
+              fireSuccessConfetti();
+              clearCart();
+              showToast('Payment verified! Your pizzas are being prepared 🍕', 'success', 5000);
+              navigate(`/orders/${order.orderNumber}`);
+            } else {
+              throw new Error(verifyRes.message || 'Payment signature verification failed.');
+            }
+          } catch (err) {
+            console.error('Payment verification failed:', err);
+            setErrorMessage((err as Error).message);
+            showToast((err as Error).message || 'Payment verification failed', 'error');
+          } finally {
+            setIsProcessing(false);
+          }
+        },
+        prefill: {
+          name: user?.name,
+          email: user?.email,
+          contact: deliveryAddress.phone,
+        },
+        theme: {
+          color: '#e63946',
+        },
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false);
+            api.post('/payments/failed', {
+              razorpayOrderId: razorpay.orderId,
+              error: 'Customer dismissed checkout modal',
+            }).catch(() => {});
+            showToast('Payment window was closed.', 'warning');
+          },
+        },
+      };
+
+      const rzpInstance = new window.Razorpay(options);
+      rzpInstance.on('payment.failed', function (response: any) {
+        setIsProcessing(false);
+        setErrorMessage(response.error?.description || 'Payment transaction failed.');
+        api.post('/payments/failed', {
+          razorpayOrderId: razorpay.orderId,
+          error: response.error,
+        }).catch(() => {});
+        showToast(response.error?.description || 'Payment failed', 'error');
+      });
+
+      rzpInstance.open();
+    } catch (err) {
+      console.error('Checkout error:', err);
+      setErrorMessage((err as Error).message || 'Failed to initiate checkout.');
+      showToast((err as Error).message || 'Failed to initiate checkout', 'error');
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      {/* Title */}
+      <div>
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-white">Checkout & Delivery</h1>
+        <p className="text-sm text-oasis-muted mt-1">
+          Provide your hot delivery destination and complete test payment via Razorpay.
+        </p>
+      </div>
+
+      {errorMessage && (
+        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 shrink-0" />
+          <p className="text-sm font-medium">{errorMessage}</p>
+        </div>
+      )}
+
+      <form onSubmit={handlePayWithRazorpay} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left 7 Columns: Delivery Address Form */}
+        <div className="lg:col-span-7 space-y-6">
+          <div className="p-6 sm:p-8 rounded-3xl bg-oasis-card border border-oasis-border shadow-xl space-y-5">
+            <h2 className="font-serif text-xl font-bold text-white flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-oasis-red" />
+              Delivery Address
+            </h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                  Street Address & Flat / House No. *
+                </label>
+                <input
+                  type="text"
+                  name="street"
+                  required
+                  value={deliveryAddress.street}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Flat 402, Sunset Heights, 12th Main Rd"
+                  className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    City *
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    required
+                    value={deliveryAddress.city}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    State *
+                  </label>
+                  <input
+                    type="text"
+                    name="state"
+                    required
+                    value={deliveryAddress.state}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Postal Code *
+                  </label>
+                  <input
+                    type="text"
+                    name="postalCode"
+                    required
+                    value={deliveryAddress.postalCode}
+                    onChange={handleInputChange}
+                    placeholder="e.g. 400001"
+                    className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5 text-oasis-amber" />
+                  Contact Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  required
+                  value={deliveryAddress.phone}
+                  onChange={handleInputChange}
+                  placeholder="e.g. 9876543210 (For delivery rider call)"
+                  className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <FileText className="w-3.5 h-3.5 text-slate-400" />
+                  Delivery Instructions (Optional)
+                </label>
+                <textarea
+                  name="instructions"
+                  rows={2}
+                  value={deliveryAddress.instructions}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Ring the bell twice, leave at front door, extra napkins please"
+                  className="w-full px-4 py-2.5 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          {/* Test Payment Notice Box */}
+          <div className="p-5 rounded-2xl bg-oasis-amber/10 border border-oasis-amber/30 text-xs text-oasis-amber space-y-2">
+            <div className="flex items-center gap-2 font-bold text-sm">
+              <ShieldCheck className="w-4 h-4 text-oasis-amber" />
+              Razorpay Test Mode Notice
+            </div>
+            <p className="leading-relaxed">
+              This application operates in <strong>Razorpay Test Mode</strong> for academic evaluation. No real payment cards will be charged. You can use standard test credentials provided in the Razorpay popup to simulate authorization and verification.
+            </p>
+          </div>
+        </div>
+
+        {/* Right 5 Columns: Final Review & Pay Button */}
+        <div className="lg:col-span-5 sticky top-28 space-y-6">
+          <div className="p-6 rounded-3xl bg-oasis-card border border-oasis-border shadow-2xl space-y-6">
+            <h2 className="font-serif text-xl font-bold text-white">Order Review</h2>
+
+            {/* Items summary */}
+            <div className="max-h-60 overflow-y-auto pr-1 space-y-3 divide-y divide-white/5 scrollbar-thin">
+              {cart.map((item) => (
+                <div key={item.cartItemId} className="pt-2 first:pt-0 flex justify-between text-xs">
+                  <div>
+                    <span className="font-bold text-white block">
+                      {item.quantity}x {item.name}
+                    </span>
+                    <span className="text-oasis-muted">{item.base.name}, {item.sauce.name}</span>
+                  </div>
+                  <span className="font-semibold text-white">₹{item.unitPrice * item.quantity}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Price breakdown */}
+            <div className="space-y-2 pt-4 border-t border-oasis-border/60 text-xs text-slate-300">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span className="text-white font-medium">₹{subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>GST (5%)</span>
+                <span className="text-white font-medium">₹{tax.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Delivery Fee</span>
+                {deliveryFee === 0 ? (
+                  <span className="text-emerald-400 font-bold uppercase text-[11px]">FREE</span>
+                ) : (
+                  <span className="text-white font-medium">₹{deliveryFee.toFixed(2)}</span>
+                )}
+              </div>
+              <div className="flex justify-between items-baseline pt-2 border-t border-white/5 text-sm font-bold text-white">
+                <span>Total to Pay</span>
+                <span className="font-serif text-2xl font-black text-oasis-amber">
+                  ₹{grandTotal.toFixed(2)}
+                </span>
+              </div>
+            </div>
+
+            {/* Pay Button */}
+            <button
+              type="submit"
+              disabled={isProcessing}
+              className="w-full py-4 rounded-2xl bg-oasis-red hover:bg-oasis-red-hover disabled:bg-slate-700 text-white font-bold text-base flex items-center justify-center gap-3 shadow-glow-red hover:scale-[1.02] active:scale-95 transition-all"
+            >
+              {isProcessing ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Processing Test Payment...
+                </>
+              ) : (
+                <>
+                  <CreditCard className="w-5 h-5 text-oasis-gold" />
+                  Pay ₹{grandTotal.toFixed(2)} with Razorpay
+                </>
+              )}
+            </button>
+
+            <div className="flex items-center justify-center gap-4 text-xs text-oasis-muted pt-2 border-t border-oasis-border/60">
+              <span className="flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                Atomic Inventory
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                HMAC SHA-256
+              </span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
