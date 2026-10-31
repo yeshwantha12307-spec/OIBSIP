@@ -10,6 +10,7 @@ import {
   X,
   Clock,
   Compass,
+  Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { useCart } from '../context/CartContext.js';
@@ -39,8 +40,12 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#D92D20] to-[#A91F18] flex items-center justify-center shadow-glow-red group-hover:scale-105 transition-transform">
-            <span className="text-xl">🍕</span>
+          <div className="relative w-11 h-11 rounded-full p-0.5 bg-gradient-to-br from-[#F59E0B] via-[#D92D20] to-[#78350F] shadow-[0_0_15px_rgba(217,45,32,0.35)] group-hover:scale-105 transition-all overflow-hidden shrink-0">
+            <img
+              src="/oasis-logo.png"
+              alt="Oasis Pizza Logo"
+              className="w-full h-full object-cover rounded-full"
+            />
           </div>
           <div>
             <span className="font-serif text-2xl font-black tracking-tight text-[#38251F] group-hover:text-[#D92D20] transition-colors">
@@ -89,6 +94,17 @@ export const Navbar: React.FC = () => {
               Admin Portal
             </Link>
           )}
+
+          {/* Loader Preview Trigger */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('oasis-preview-loader'))}
+            title="Preview Hearth Loading Animation"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#D92D20]/10 via-[#F59E0B]/10 to-[#D92D20]/10 hover:from-[#D92D20]/20 hover:to-[#F59E0B]/20 border border-[#F59E0B]/30 text-[#D97706] hover:text-[#D92D20] text-xs font-bold transition-all shadow-warm-sm group"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#F59E0B] group-hover:rotate-45 transition-transform" />
+            <span className="hidden sm:inline">Animation Preview</span>
+          </button>
 
           {/* Cart Button */}
           <Link

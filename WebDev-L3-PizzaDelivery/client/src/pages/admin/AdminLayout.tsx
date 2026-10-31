@@ -38,8 +38,12 @@ export const AdminLayout: React.FC = () => {
       {/* Mobile Header Bar */}
       <div className="md:hidden flex items-center justify-between p-4 bg-[#FFFCF7] border-b border-[#F2E8DC] shadow-warm-sm">
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#D92D20] to-[#A91F18] flex items-center justify-center text-white text-base">
-            🍕
+          <div className="w-9 h-9 rounded-full p-0.5 bg-gradient-to-br from-[#F59E0B] via-[#D92D20] to-[#78350F] shadow-[0_0_10px_rgba(217,45,32,0.3)] overflow-hidden shrink-0">
+            <img
+              src="/oasis-logo.png"
+              alt="Oasis Pizza Logo"
+              className="w-full h-full object-cover rounded-full"
+            />
           </div>
           <span className="font-serif font-black text-lg text-[#38251F]">
             OASIS <span className="text-[#D92D20]">ADMIN</span>
@@ -89,8 +93,12 @@ export const AdminLayout: React.FC = () => {
           {/* Logo & Portal Tag */}
           <div>
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#D92D20] to-[#A91F18] flex items-center justify-center shadow-glow-red">
-                <span className="text-xl">🍕</span>
+              <div className="relative w-11 h-11 rounded-full p-0.5 bg-gradient-to-br from-[#F59E0B] via-[#D92D20] to-[#78350F] shadow-[0_0_15px_rgba(217,45,32,0.35)] group-hover:scale-105 transition-all overflow-hidden shrink-0">
+                <img
+                  src="/oasis-logo.png"
+                  alt="Oasis Pizza Logo"
+                  className="w-full h-full object-cover rounded-full"
+                />
               </div>
               <div>
                 <span className="font-serif text-xl font-black tracking-tight text-[#38251F] block">

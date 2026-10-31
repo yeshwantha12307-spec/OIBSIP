@@ -82,3 +82,57 @@
 .animate-gentle-pulse {
   animation: gentle-pulse 2s ease-in-out infinite;
 }
+
+/* Hearth Fire Glow Pulse */
+@keyframes hearth-glow {
+  0%, 100% {
+    opacity: 0.65;
+    transform: scale(1);
+    filter: blur(48px);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.12);
+    filter: blur(56px);
+  }
+}
+
+.animate-hearth-glow {
+  animation: hearth-glow 3.2s ease-in-out infinite;
+}
+
+/* Metallic Light Glare Sweep */
+@keyframes sheen-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  50%, 100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+
+.animate-sheen-sweep {
+  animation: sheen-sweep 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Floating Rising Embers */
+@keyframes ember-rise {
+  0% {
+    transform: translateY(0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-160px) scale(1.2) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.animate-ember {
+  animation: ember-rise 3.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}

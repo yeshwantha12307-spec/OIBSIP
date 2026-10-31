@@ -9,9 +9,13 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand Column */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#D92D20] to-[#A91F18] flex items-center justify-center shadow-glow-red">
-                <span className="text-lg">🍕</span>
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="relative w-11 h-11 rounded-full p-0.5 bg-gradient-to-br from-[#F59E0B] via-[#D92D20] to-[#78350F] shadow-[0_0_15px_rgba(217,45,32,0.35)] group-hover:scale-105 transition-all overflow-hidden shrink-0">
+                <img
+                  src="/oasis-logo.png"
+                  alt="Oasis Pizza Logo"
+                  className="w-full h-full object-cover rounded-full"
+                />
               </div>
               <span className="font-serif text-2xl font-black tracking-tight text-[#38251F]">
                 OASIS <span className="text-[#D92D20] font-sans font-light">PIZZA</span>

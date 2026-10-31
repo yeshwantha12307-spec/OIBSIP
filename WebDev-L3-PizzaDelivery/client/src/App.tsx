@@ -43,11 +43,32 @@ const ScrollToTop: React.FC = () => {
 
 const AppContent: React.FC = () => {
   const { isLoading } = useAuth();
+  const [previewLoader, setPreviewLoader] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleTrigger = () => {
+      setPreviewLoader(true);
+    };
+    window.addEventListener('oasis-preview-loader', handleTrigger);
+    return () => window.removeEventListener('oasis-preview-loader', handleTrigger);
+  }, []);
+
+  React.useEffect(() => {
+    if (previewLoader) {
+      const timer = setTimeout(() => {
+        setPreviewLoader(false);
+      }, 5500);
+      return () => clearTimeout(timer);
+    }
+  }, [previewLoader]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFF8EF] text-[#38251F] selection:bg-[#D92D20] selection:text-white">
       <ScrollToTop />
-      <AppLoader isLoading={isLoading} />
+      <AppLoader
+        isLoading={isLoading || previewLoader}
+        onClose={previewLoader ? () => setPreviewLoader(false) : undefined}
+      />
       
       <Routes>
         {/* Dedicated Admin Login */}

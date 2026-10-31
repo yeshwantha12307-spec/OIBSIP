@@ -116,7 +116,7 @@ export const CheckoutPage: React.FC = () => {
         currency: razorpay.currency || 'INR',
         name: 'Oasis Pizza',
         description: `Order #${order.orderNumber} - Artisan Wood-Fired Pizza`,
-        image: '/pizza-icon.svg',
+        image: '/oasis-logo.png',
         order_id: razorpay.orderId,
         handler: async function (response: any) {
           try {
