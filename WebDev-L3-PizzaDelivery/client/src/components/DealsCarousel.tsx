@@ -199,3 +199,4 @@ export const DealsCarousel: React.FC<DealsCarouselProps> = ({ pizzas }) => {
     </div>
   );
 };
+

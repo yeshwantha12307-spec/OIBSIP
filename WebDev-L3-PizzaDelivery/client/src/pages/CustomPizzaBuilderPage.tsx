@@ -94,7 +94,7 @@ export const CustomPizzaBuilderPage: React.FC = () => {
     const calculateServerPrice = async () => {
       try {
         setPriceCalculating(true);
-        const res = await api.post('/builder/preview-price', {
+        const res = await api.post('/builder/calculate-price', {
           baseId: selectedBaseId,
           sauceId: selectedSauceId,
           cheeseId: selectedCheeseId,

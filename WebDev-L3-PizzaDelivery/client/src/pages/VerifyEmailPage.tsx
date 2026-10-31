@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { CheckCircle2, XCircle, ArrowRight, RefreshCw } from 'lucide-react';
 import { api } from '../api/client.js';
@@ -10,6 +10,7 @@ export const VerifyEmailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [verified, setVerified] = useState(false);
   const [message, setMessage] = useState('');
+  const hasRequested = useRef(false);
 
   useEffect(() => {
     if (!token) {
@@ -18,6 +19,9 @@ export const VerifyEmailPage: React.FC = () => {
       setMessage('Missing verification token in link.');
       return;
     }
+
+    if (hasRequested.current) return;
+    hasRequested.current = true;
 
     const verify = async () => {
       try {
