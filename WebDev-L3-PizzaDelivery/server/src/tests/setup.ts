@@ -9,6 +9,7 @@ beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create({
     instance: {
       dbName: 'oasis_pizza_test',
+      launchTimeout: 60000,
     },
     spawn: {
       timeout: 60000,

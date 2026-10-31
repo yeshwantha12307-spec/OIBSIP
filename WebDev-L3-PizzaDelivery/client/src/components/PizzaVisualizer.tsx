@@ -89,11 +89,11 @@ export const PizzaVisualizer: React.FC<PizzaVisualizerProps> = ({
   return (
     <div className={`relative flex items-center justify-center ${dimensions} mx-auto select-none group`}>
       {/* Wood Peel Platform background glow */}
-      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-900/20 via-oasis-amber/10 to-oasis-red/10 blur-xl group-hover:scale-105 transition-transform duration-700"></div>
+      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#38251F]/10 via-[#D97706]/10 to-[#D92D20]/10 blur-xl group-hover:scale-105 transition-transform duration-700"></div>
 
       <svg
         viewBox="0 0 200 200"
-        className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-transform duration-500 hover:rotate-3"
+        className="w-full h-full drop-shadow-[0_15px_25px_rgba(56,37,31,0.2)] transition-transform duration-500 hover:rotate-3"
       >
         <defs>
           {/* Crust outer radial gradient */}

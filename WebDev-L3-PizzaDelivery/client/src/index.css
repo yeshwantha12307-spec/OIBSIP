@@ -4,30 +4,56 @@
 
 @layer base {
   body {
-    @apply bg-oasis-dark text-oasis-light antialiased font-sans;
+    @apply bg-[#FFF8EF] text-[#38251F] antialiased font-sans selection:bg-[#D92D20] selection:text-white;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-[#38251F] tracking-tight;
   }
 }
 
-/* Custom scrollbars */
+/* Warm artisanal scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f1115;
+  background: #FFF8EF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2f3a;
-  border-radius: 4px;
+  background: #E6D9C8;
+  border-radius: 9999px;
+  border: 2px solid #FFF8EF;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #e63946;
+  background: #D92D20;
 }
 
-/* Animations */
+/* Shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(242, 232, 220, 0.4) 0%,
+    rgba(242, 232, 220, 0.8) 50%,
+    rgba(242, 232, 220, 0.4) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* Smooth slow rotation for pizza visualizer */
 @keyframes spin-slow {
   from {
     transform: rotate(0deg);
@@ -39,4 +65,20 @@
 
 .animate-spin-slow {
   animation: spin-slow 24s linear infinite;
+}
+
+/* Gentle pulse for delivery tracker & alerts */
+@keyframes gentle-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.02);
+  }
+}
+
+.animate-gentle-pulse {
+  animation: gentle-pulse 2s ease-in-out infinite;
 }

@@ -46,8 +46,8 @@ export const AdminAlertsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl font-black text-white">Low-Stock Alert History</h1>
-          <p className="text-sm text-oasis-muted mt-1">
+          <h1 className="font-serif text-3xl font-black text-[#38251F]">Low-Stock Alert History</h1>
+          <p className="text-sm text-[#765747] mt-1 font-medium">
             Automated node-cron scheduler alert dispatches and resolution tracking.
           </p>
         </div>
@@ -55,7 +55,7 @@ export const AdminAlertsPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchAlerts}
-            className="p-2.5 rounded-xl border border-oasis-border bg-oasis-card hover:bg-white/5 text-slate-300 hover:text-white transition-colors"
+            className="p-2.5 rounded-2xl border border-[#F2E8DC] bg-[#FFFCF7] hover:bg-[#F2E8DC] text-[#38251F] transition-colors shadow-warm-sm"
             title="Refresh alerts"
           >
             <RefreshCw className="w-4 h-4" />
@@ -63,7 +63,7 @@ export const AdminAlertsPage: React.FC = () => {
           <button
             onClick={handleTriggerAudit}
             disabled={auditing}
-            className="px-4 py-2.5 rounded-xl bg-oasis-red hover:bg-oasis-red-hover text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all active:scale-95"
+            className="px-4 py-2.5 rounded-2xl bg-[#D92D20] hover:bg-[#A91F18] text-white font-bold text-xs flex items-center gap-2 shadow-glow-red transition-all active:scale-95 disabled:opacity-50"
           >
             {auditing ? (
               <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -76,13 +76,13 @@ export const AdminAlertsPage: React.FC = () => {
       </div>
 
       {/* Alerts Table */}
-      <div className="p-6 rounded-3xl bg-oasis-card border border-oasis-border shadow-xl overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm overflow-hidden">
         {loading ? (
-          <div className="py-20 text-center text-xs text-oasis-muted animate-pulse">Loading alert history...</div>
+          <div className="py-20 text-center text-xs text-[#765747] animate-pulse">Loading alert history...</div>
         ) : alerts.length === 0 ? (
-          <div className="py-20 text-center space-y-2 text-oasis-muted">
+          <div className="py-20 text-center space-y-2 text-[#765747]">
             <span className="text-4xl block">🔔</span>
-            <p className="font-semibold text-white">No low-stock alerts triggered yet</p>
+            <p className="font-bold text-[#38251F] text-base">No low-stock alerts triggered yet</p>
             <p className="text-xs">
               All ingredients are currently stocked above their minimum safety thresholds.
             </p>
@@ -91,7 +91,7 @@ export const AdminAlertsPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-oasis-border/60 text-oasis-muted uppercase tracking-wider font-semibold">
+                <tr className="border-b border-[#F2E8DC] text-[#765747] uppercase tracking-wider font-bold">
                   <th className="pb-3">Alert Triggered</th>
                   <th className="pb-3">Ingredient</th>
                   <th className="pb-3">Category</th>
@@ -102,31 +102,31 @@ export const AdminAlertsPage: React.FC = () => {
                   <th className="pb-3">Resolution State</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-[#F2E8DC]">
                 {alerts.map((alert) => (
-                  <tr key={alert._id} className="hover:bg-white/5 transition-colors">
-                    <td className="py-4 text-slate-400 whitespace-nowrap">
+                  <tr key={alert._id} className="hover:bg-[#FFF8EF] transition-colors">
+                    <td className="py-4 text-[#765747] whitespace-nowrap font-medium">
                       {new Date(alert.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
                       {new Date(alert.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </td>
-                    <td className="py-4 font-bold text-white">{alert.ingredientName}</td>
-                    <td className="py-4 capitalize text-slate-300">{alert.category}</td>
-                    <td className="py-4 font-bold text-rose-400">
+                    <td className="py-4 font-bold text-[#38251F]">{alert.ingredientName}</td>
+                    <td className="py-4 capitalize text-[#765747] font-medium">{alert.category}</td>
+                    <td className="py-4 font-bold text-[#D92D20]">
                       {alert.currentQuantity} {alert.unit}
                     </td>
-                    <td className="py-4 text-slate-400">
+                    <td className="py-4 text-[#765747] font-medium">
                       {alert.lowStockThreshold} {alert.unit}
                     </td>
-                    <td className="py-4 text-slate-300 flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-oasis-muted" />
+                    <td className="py-4 text-[#765747] flex items-center gap-1.5 font-medium">
+                      <Mail className="w-3.5 h-3.5 text-[#9C8577]" />
                       {alert.sentToEmail}
                     </td>
                     <td className="py-4">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                           alert.status === 'sent'
-                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                            : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                            ? 'bg-emerald-500/10 text-emerald-700 border border-emerald-500/30'
+                            : 'bg-rose-500/10 text-rose-700 border border-rose-500/30'
                         }`}
                       >
                         {alert.status}
@@ -134,7 +134,7 @@ export const AdminAlertsPage: React.FC = () => {
                     </td>
                     <td className="py-4">
                       {alert.resolved ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-semibold">
+                        <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-bold">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           Resolved{' '}
                           {alert.resolvedAt &&
@@ -144,7 +144,7 @@ export const AdminAlertsPage: React.FC = () => {
                             })})`}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-amber-400 font-bold animate-pulse">
+                        <span className="inline-flex items-center gap-1 text-[11px] text-[#D92D20] font-bold animate-pulse">
                           <AlertTriangle className="w-3.5 h-3.5" />
                           Unresolved Breach
                         </span>

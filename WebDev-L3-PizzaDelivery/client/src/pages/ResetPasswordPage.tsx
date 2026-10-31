@@ -58,72 +58,68 @@ export const ResetPasswordPage: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto my-16 px-4">
-      <div className="p-8 rounded-3xl bg-oasis-card border border-oasis-border shadow-2xl space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="font-serif text-2xl font-bold text-white">Choose New Password</h1>
-          <p className="text-xs text-oasis-muted">
-            Enter your new secure password below to regain account access.
+      <div className="p-8 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-md space-y-6">
+        <div className="space-y-2">
+          <h1 className="font-serif text-3xl font-black text-[#38251F]">Set New Password</h1>
+          <p className="text-xs text-[#765747]">
+            Please enter your new secure password below to regain access.
           </p>
         </div>
 
         {error && (
-          <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2.5">
+          <div className="p-4 rounded-2xl bg-[#FDF2F2] border border-[#D92D20]/30 text-[#D92D20] text-xs flex items-center gap-2.5">
             <AlertCircle className="w-4 h-4 shrink-0" />
-            <p>{error}</p>
+            <p className="font-semibold">{error}</p>
           </div>
         )}
 
         {success ? (
-          <div className="space-y-4 text-center">
-            <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto">
-              <CheckCircle2 className="w-6 h-6" />
+          <div className="space-y-4 text-center py-4">
+            <div className="w-16 h-16 rounded-full bg-[#EBF7EE] text-[#198754] border border-[#198754]/30 flex items-center justify-center mx-auto">
+              <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h3 className="font-bold text-white text-base">Password Updated</h3>
-            <p className="text-xs text-slate-300">
-              Your password has been changed successfully. You can now log in.
+            <h3 className="font-serif text-2xl font-bold text-[#38251F]">Password Updated!</h3>
+            <p className="text-xs text-[#765747]">
+              Your password has been changed securely. You can now log into your account.
             </p>
             <div className="pt-2">
               <Link
                 to="/login"
-                className="w-full py-3 rounded-xl bg-oasis-red hover:bg-oasis-red-hover text-white font-bold text-xs inline-flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-3.5 rounded-2xl bg-[#D92D20] hover:bg-[#A91F18] text-white font-bold text-xs inline-flex items-center justify-center gap-2 shadow-glow-red transition-all"
               >
                 Sign In Now
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                New Password
-              </label>
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#38251F]">New Password (min. 6 characters)</label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-oasis-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-[#765747] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="At least 6 characters"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                  placeholder="••••••••••••"
+                  className="w-full pl-10 pr-4 py-3 rounded-2xl border border-[#F2E8DC] bg-[#FFF8EF] text-[#38251F] text-sm focus:outline-none focus:border-[#D92D20] transition-colors shadow-inner"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Confirm New Password
-              </label>
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#38251F]">Confirm New Password</label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-oasis-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-[#765747] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Repeat new password"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                  placeholder="••••••••••••"
+                  className="w-full pl-10 pr-4 py-3 rounded-2xl border border-[#F2E8DC] bg-[#FFF8EF] text-[#38251F] text-sm focus:outline-none focus:border-[#D92D20] transition-colors shadow-inner"
                 />
               </div>
             </div>
@@ -131,13 +127,13 @@ export const ResetPasswordPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl bg-oasis-red hover:bg-oasis-red-hover disabled:bg-slate-700 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl bg-[#D92D20] hover:bg-[#A91F18] text-white font-extrabold text-sm shadow-glow-red transition-all flex items-center justify-center gap-2 active:scale-95"
             >
               {loading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  Set New Password
+                  Update Password
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

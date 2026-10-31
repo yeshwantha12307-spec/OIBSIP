@@ -25,7 +25,14 @@ export const createApp = (): Express => {
 
   app.use(
     cors({
-      origin: [env.CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const allowed = [env.CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'];
+        if (allowed.includes(origin) || (env.NODE_ENV !== 'production' && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))) {
+          return callback(null, true);
+        }
+        return callback(new Error(`CORS policy does not allow access from origin ${origin}`));
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],

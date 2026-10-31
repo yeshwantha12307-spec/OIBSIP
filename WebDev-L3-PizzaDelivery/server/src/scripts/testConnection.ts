@@ -84,7 +84,13 @@ const testAtlasConnection = async () => {
       errorCategory = 'AUTHENTICATION_FAILED';
     } else if (message.includes('ENOTFOUND') || message.includes('querySrv')) {
       errorCategory = 'DNS_RESOLUTION_FAILED';
-    } else if (message.includes('selection timed out') || message.includes('timed out')) {
+    } else if (
+      message.includes('selection timed out') ||
+      message.includes('timed out') ||
+      message.includes('whitelisted') ||
+      message.includes('SSL alert') ||
+      message.includes('ReplicaSetNoPrimary')
+    ) {
       errorCategory = 'NETWORK_TIMEOUT_OR_IP_RESTRICTION';
     }
 

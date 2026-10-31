@@ -13,9 +13,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, adminO
 
   if (isLoading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 text-oasis-light">
-        <div className="w-12 h-12 border-4 border-oasis-red border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-sm font-medium text-oasis-muted">Verifying credentials...</p>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
+        <div className="w-12 h-12 border-4 border-[#D92D20] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-sm font-medium text-[#765747]">Verifying credentials...</p>
       </div>
     );
   }

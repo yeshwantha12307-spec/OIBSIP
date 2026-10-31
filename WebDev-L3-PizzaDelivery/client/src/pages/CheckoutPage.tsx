@@ -57,7 +57,7 @@ export const CheckoutPage: React.FC = () => {
       particleCount: 120,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f'],
+      colors: ['#D92D20', '#D97706', '#198754', '#E6D9C8'],
     });
   };
 
@@ -152,7 +152,7 @@ export const CheckoutPage: React.FC = () => {
           contact: deliveryAddress.phone,
         },
         theme: {
-          color: '#e63946',
+          color: '#D92D20',
         },
         modal: {
           ondismiss: function () {
@@ -190,31 +190,31 @@ export const CheckoutPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Title */}
       <div>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-white">Checkout & Delivery</h1>
-        <p className="text-sm text-oasis-muted mt-1">
+        <h1 className="font-serif text-3xl sm:text-4xl font-black text-[#38251F]">Checkout & Delivery</h1>
+        <p className="text-sm text-[#765747] mt-1">
           Provide your hot delivery destination and complete test payment via Razorpay.
         </p>
       </div>
 
       {errorMessage && (
-        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center gap-3">
+        <div className="p-5 rounded-3xl bg-[#FDF2F2] border border-[#D92D20]/30 text-[#D92D20] flex items-center gap-3 shadow-warm-sm">
           <AlertCircle className="w-5 h-5 shrink-0" />
-          <p className="text-sm font-medium">{errorMessage}</p>
+          <p className="text-sm font-semibold">{errorMessage}</p>
         </div>
       )}
 
       <form onSubmit={handlePayWithRazorpay} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left 7 Columns: Delivery Address Form */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="p-6 sm:p-8 rounded-3xl bg-oasis-card border border-oasis-border shadow-xl space-y-5">
-            <h2 className="font-serif text-xl font-bold text-white flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-oasis-red" />
-              Delivery Address
+          <div className="p-7 sm:p-8 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-md space-y-6">
+            <h2 className="font-serif text-xl font-bold text-[#38251F] flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-[#D92D20]" />
+              Delivery Destination
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-[#38251F] uppercase tracking-wider mb-1.5">
                   Street Address & Flat / House No. *
                 </label>
                 <input
@@ -224,13 +224,13 @@ export const CheckoutPage: React.FC = () => {
                   value={deliveryAddress.street}
                   onChange={handleInputChange}
                   placeholder="e.g. Flat 402, Sunset Heights, 12th Main Rd"
-                  className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                  className="w-full px-4 py-3 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-[#38251F] text-sm focus:outline-none focus:border-[#D92D20] transition-colors shadow-inner"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#38251F] uppercase tracking-wider mb-1.5">
                     City *
                   </label>
                   <input
@@ -239,12 +239,12 @@ export const CheckoutPage: React.FC = () => {
                     required
                     value={deliveryAddress.city}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                    className="w-full px-4 py-3 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-[#38251F] text-sm focus:outline-none focus:border-[#D92D20] transition-colors shadow-inner"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#38251F] uppercase tracking-wider mb-1.5">
                     State *
                   </label>
                   <input
@@ -253,12 +253,12 @@ export const CheckoutPage: React.FC = () => {
                     required
                     value={deliveryAddress.state}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                    className="w-full px-4 py-3 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-[#38251F] text-sm focus:outline-none focus:border-[#D92D20] transition-colors shadow-inner"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#38251F] uppercase tracking-wider mb-1.5">
                     Postal Code *
                   </label>
                   <input
@@ -268,14 +268,14 @@ export const CheckoutPage: React.FC = () => {
                     value={deliveryAddress.postalCode}
                     onChange={handleInputChange}
                     placeholder="e.g. 400001"
-                    className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                    className="w-full px-4 py-3 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-[#38251F] text-sm focus:outline-none focus:border-[#D92D20] transition-colors shadow-inner"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-oasis-amber" />
+                <label className="block text-xs font-bold text-[#38251F] uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5 text-[#D97706]" />
                   Contact Phone Number *
                 </label>
                 <input
@@ -285,13 +285,13 @@ export const CheckoutPage: React.FC = () => {
                   value={deliveryAddress.phone}
                   onChange={handleInputChange}
                   placeholder="e.g. 9876543210 (For delivery rider call)"
-                  className="w-full px-4 py-3 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                  className="w-full px-4 py-3 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-[#38251F] text-sm focus:outline-none focus:border-[#D92D20] transition-colors shadow-inner"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5 text-slate-400" />
+                <label className="block text-xs font-bold text-[#38251F] uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <FileText className="w-3.5 h-3.5 text-[#765747]" />
                   Delivery Instructions (Optional)
                 </label>
                 <textarea
@@ -300,19 +300,19 @@ export const CheckoutPage: React.FC = () => {
                   value={deliveryAddress.instructions}
                   onChange={handleInputChange}
                   placeholder="e.g. Ring the bell twice, leave at front door, extra napkins please"
-                  className="w-full px-4 py-2.5 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-red transition-colors"
+                  className="w-full px-4 py-2.5 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-[#38251F] text-sm focus:outline-none focus:border-[#D92D20] transition-colors shadow-inner"
                 ></textarea>
               </div>
             </div>
           </div>
 
           {/* Test Payment Notice Box */}
-          <div className="p-5 rounded-2xl bg-oasis-amber/10 border border-oasis-amber/30 text-xs text-oasis-amber space-y-2">
-            <div className="flex items-center gap-2 font-bold text-sm">
-              <ShieldCheck className="w-4 h-4 text-oasis-amber" />
+          <div className="p-6 rounded-3xl bg-[#FEF3C7] border border-[#D97706]/30 text-xs text-[#38251F] space-y-2 shadow-warm-sm">
+            <div className="flex items-center gap-2 font-bold text-sm text-[#D97706]">
+              <ShieldCheck className="w-4 h-4 text-[#D97706]" />
               Razorpay Test Mode Notice
             </div>
-            <p className="leading-relaxed">
+            <p className="leading-relaxed text-[#765747]">
               This application operates in <strong>Razorpay Test Mode</strong> for academic evaluation. No real payment cards will be charged. You can use standard test credentials provided in the Razorpay popup to simulate authorization and verification.
             </p>
           </div>
@@ -320,45 +320,45 @@ export const CheckoutPage: React.FC = () => {
 
         {/* Right 5 Columns: Final Review & Pay Button */}
         <div className="lg:col-span-5 sticky top-28 space-y-6">
-          <div className="p-6 rounded-3xl bg-oasis-card border border-oasis-border shadow-2xl space-y-6">
-            <h2 className="font-serif text-xl font-bold text-white">Order Review</h2>
+          <div className="p-7 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-md space-y-6">
+            <h2 className="font-serif text-xl font-bold text-[#38251F]">Order Review</h2>
 
             {/* Items summary */}
-            <div className="max-h-60 overflow-y-auto pr-1 space-y-3 divide-y divide-white/5 scrollbar-thin">
+            <div className="max-h-60 overflow-y-auto pr-1 space-y-3 divide-y divide-[#F2E8DC] scrollbar-thin">
               {cart.map((item) => (
                 <div key={item.cartItemId} className="pt-2 first:pt-0 flex justify-between text-xs">
                   <div>
-                    <span className="font-bold text-white block">
+                    <span className="font-bold text-[#38251F] block">
                       {item.quantity}x {item.name}
                     </span>
-                    <span className="text-oasis-muted">{item.base.name}, {item.sauce.name}</span>
+                    <span className="text-[#765747]">{item.base.name}, {item.sauce.name}</span>
                   </div>
-                  <span className="font-semibold text-white">₹{item.unitPrice * item.quantity}</span>
+                  <span className="font-bold text-[#38251F]">₹{item.unitPrice * item.quantity}</span>
                 </div>
               ))}
             </div>
 
             {/* Price breakdown */}
-            <div className="space-y-2 pt-4 border-t border-oasis-border/60 text-xs text-slate-300">
+            <div className="space-y-2 pt-4 border-t border-[#F2E8DC] text-xs text-[#765747]">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="text-white font-medium">₹{subtotal.toFixed(2)}</span>
+                <span className="text-[#38251F] font-bold">₹{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>GST (5%)</span>
-                <span className="text-white font-medium">₹{tax.toFixed(2)}</span>
+                <span className="text-[#38251F] font-bold">₹{tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Delivery Fee</span>
                 {deliveryFee === 0 ? (
-                  <span className="text-emerald-400 font-bold uppercase text-[11px]">FREE</span>
+                  <span className="text-[#198754] font-bold uppercase text-[11px]">FREE</span>
                 ) : (
-                  <span className="text-white font-medium">₹{deliveryFee.toFixed(2)}</span>
+                  <span className="text-[#38251F] font-bold">₹{deliveryFee.toFixed(2)}</span>
                 )}
               </div>
-              <div className="flex justify-between items-baseline pt-2 border-t border-white/5 text-sm font-bold text-white">
+              <div className="flex justify-between items-baseline pt-2 border-t border-[#F2E8DC] text-sm font-bold text-[#38251F]">
                 <span>Total to Pay</span>
-                <span className="font-serif text-2xl font-black text-oasis-amber">
+                <span className="font-serif text-2xl font-black text-[#D92D20]">
                   ₹{grandTotal.toFixed(2)}
                 </span>
               </div>
@@ -368,7 +368,7 @@ export const CheckoutPage: React.FC = () => {
             <button
               type="submit"
               disabled={isProcessing}
-              className="w-full py-4 rounded-2xl bg-oasis-red hover:bg-oasis-red-hover disabled:bg-slate-700 text-white font-bold text-base flex items-center justify-center gap-3 shadow-glow-red hover:scale-[1.02] active:scale-95 transition-all"
+              className="w-full py-4 rounded-2xl bg-[#D92D20] hover:bg-[#A91F18] disabled:bg-slate-400 text-white font-extrabold text-base flex items-center justify-center gap-3 shadow-glow-red hover:scale-[1.02] active:scale-95 transition-all"
             >
               {isProcessing ? (
                 <>
@@ -377,19 +377,19 @@ export const CheckoutPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <CreditCard className="w-5 h-5 text-oasis-gold" />
+                  <CreditCard className="w-5 h-5 text-[#FEF3C7]" />
                   Pay ₹{grandTotal.toFixed(2)} with Razorpay
                 </>
               )}
             </button>
 
-            <div className="flex items-center justify-center gap-4 text-xs text-oasis-muted pt-2 border-t border-oasis-border/60">
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="flex items-center justify-center gap-4 text-xs text-[#765747] pt-2 border-t border-[#F2E8DC]">
+              <span className="flex items-center gap-1 font-semibold">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#198754]" />
                 Atomic Inventory
               </span>
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="flex items-center gap-1 font-semibold">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#198754]" />
                 HMAC SHA-256
               </span>
             </div>

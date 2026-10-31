@@ -81,15 +81,15 @@ export const AdminInventoryPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl font-black text-white">Inventory Management</h1>
-          <p className="text-sm text-oasis-muted mt-1">
+          <h1 className="font-serif text-3xl font-black text-[#38251F]">Inventory Management</h1>
+          <p className="text-sm text-[#765747] mt-1 font-medium">
             Real-time kitchen inventory quantities, low-stock safety thresholds, and atomic stock controls.
           </p>
         </div>
 
         <button
           onClick={fetchInventory}
-          className="p-2.5 rounded-xl border border-oasis-border bg-oasis-card hover:bg-white/5 text-slate-300 hover:text-white transition-colors self-start sm:self-auto"
+          className="p-2.5 rounded-2xl border border-[#F2E8DC] bg-[#FFFCF7] hover:bg-[#F2E8DC] text-[#38251F] transition-colors shadow-warm-sm self-start sm:self-auto"
           title="Refresh inventory"
         >
           <RefreshCw className="w-4 h-4" />
@@ -97,7 +97,7 @@ export const AdminInventoryPage: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-oasis-card border border-oasis-border">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm">
         {/* Category Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
           {[
@@ -110,10 +110,10 @@ export const AdminInventoryPage: React.FC = () => {
             <button
               key={cat.id}
               onClick={() => setCategoryFilter(cat.id)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              className={`px-3.5 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all shadow-sm ${
                 categoryFilter === cat.id
-                  ? 'bg-oasis-amber text-oasis-dark'
-                  : 'bg-oasis-dark text-slate-300 hover:text-white border border-oasis-border/60'
+                  ? 'bg-[#D92D20] text-white shadow-glow-red'
+                  : 'bg-[#FFF8EF] text-[#765747] hover:text-[#38251F] hover:bg-[#F2E8DC] border border-[#F2E8DC]'
               }`}
             >
               {cat.label}
@@ -123,31 +123,31 @@ export const AdminInventoryPage: React.FC = () => {
 
         {/* Search */}
         <div className="relative w-full md:w-64">
-          <Search className="w-4 h-4 text-oasis-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#765747] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search ingredient..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl bg-oasis-dark border border-oasis-border text-xs text-white placeholder-slate-500 focus:outline-none focus:border-oasis-amber transition-colors"
+            className="w-full pl-10 pr-4 py-2 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-xs text-[#38251F] placeholder:text-[#765747] focus:outline-none focus:border-[#D92D20] transition-colors shadow-inner"
           />
         </div>
       </div>
 
       {/* Inventory Table */}
-      <div className="p-6 rounded-3xl bg-oasis-card border border-oasis-border shadow-xl overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm overflow-hidden">
         {loading ? (
-          <div className="py-20 text-center text-xs text-oasis-muted animate-pulse">Loading inventory...</div>
+          <div className="py-20 text-center text-xs text-[#765747] animate-pulse">Loading inventory...</div>
         ) : filteredItems.length === 0 ? (
-          <div className="py-20 text-center space-y-2 text-oasis-muted">
+          <div className="py-20 text-center space-y-2 text-[#765747]">
             <span className="text-4xl block">📦</span>
-            <p className="font-semibold text-white">No ingredients found</p>
+            <p className="font-bold text-[#38251F] text-base">No ingredients found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-oasis-border/60 text-oasis-muted uppercase tracking-wider font-semibold">
+                <tr className="border-b border-[#F2E8DC] text-[#765747] uppercase tracking-wider font-bold">
                   <th className="pb-3">Ingredient</th>
                   <th className="pb-3">Category</th>
                   <th className="pb-3">Available Quantity</th>
@@ -157,27 +157,27 @@ export const AdminInventoryPage: React.FC = () => {
                   <th className="pb-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-[#F2E8DC]">
                 {filteredItems.map((item) => (
-                  <tr key={item._id} className="hover:bg-white/5 transition-colors">
-                    <td className="py-4 font-bold text-white">
+                  <tr key={item._id} className="hover:bg-[#FFF8EF] transition-colors">
+                    <td className="py-4 font-bold text-[#38251F]">
                       {item.name}
-                      <span className="block text-[11px] text-oasis-muted font-normal">
+                      <span className="block text-[11px] text-[#765747] font-normal">
                         {item.description}
                       </span>
                     </td>
                     <td className="py-4">
-                      <span className="capitalize px-2 py-0.5 rounded text-[10px] font-bold bg-white/5 text-slate-300 border border-white/10">
+                      <span className="capitalize px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#F2E8DC] text-[#38251F] border border-[#E6D9C8]">
                         {item.category}
                       </span>
                     </td>
-                    <td className="py-4 font-bold text-white">
+                    <td className="py-4 font-bold text-[#38251F]">
                       {item.availableQuantity} {item.unit}
                     </td>
-                    <td className="py-4 text-slate-400">
+                    <td className="py-4 text-[#765747] font-medium">
                       {item.lowStockThreshold} {item.unit}
                     </td>
-                    <td className="py-4 font-bold text-oasis-amber">
+                    <td className="py-4 font-bold text-[#D97706]">
                       {item.priceModifier === 0 ? 'Free' : `+₹${item.priceModifier}`}
                     </td>
                     <td className="py-4">
@@ -191,9 +191,9 @@ export const AdminInventoryPage: React.FC = () => {
                           setAdjustReason('manual_restock');
                           setAdjustNotes('');
                         }}
-                        className="px-3 py-1.5 rounded-xl border border-oasis-border bg-oasis-dark hover:bg-white/10 text-white font-medium text-xs inline-flex items-center gap-1.5 transition-colors"
+                        className="px-3.5 py-1.5 rounded-2xl border border-[#F2E8DC] bg-[#FFF8EF] hover:bg-[#F2E8DC] text-[#38251F] font-semibold text-xs inline-flex items-center gap-1.5 transition-colors shadow-warm-sm"
                       >
-                        <Edit2 className="w-3.5 h-3.5 text-oasis-amber" />
+                        <Edit2 className="w-3.5 h-3.5 text-[#D97706]" />
                         Adjust Stock
                       </button>
                     </td>
@@ -207,21 +207,21 @@ export const AdminInventoryPage: React.FC = () => {
 
       {/* Adjust Stock Modal */}
       {adjustingItem && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-oasis-card border border-oasis-border rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
-            <div className="flex items-start justify-between pb-3 border-b border-oasis-border/60">
+        <div className="fixed inset-0 z-50 bg-[#38251F]/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-[#FFFCF7] border border-[#F2E8DC] rounded-3xl p-6 sm:p-8 space-y-6 shadow-warm-xl">
+            <div className="flex items-start justify-between pb-3 border-b border-[#F2E8DC]">
               <div>
-                <span className="text-xs font-bold text-oasis-amber uppercase tracking-wider block">
+                <span className="text-xs font-bold text-[#D97706] uppercase tracking-wider block">
                   Inventory Stock Adjustment
                 </span>
-                <h3 className="font-serif text-xl font-bold text-white">{adjustingItem.name}</h3>
-                <p className="text-xs text-oasis-muted">
-                  Current stock: {adjustingItem.availableQuantity} {adjustingItem.unit}
+                <h3 className="font-serif text-xl font-bold text-[#38251F] mt-0.5">{adjustingItem.name}</h3>
+                <p className="text-xs text-[#765747] mt-0.5">
+                  Current stock: <strong className="text-[#38251F]">{adjustingItem.availableQuantity} {adjustingItem.unit}</strong>
                 </p>
               </div>
               <button
                 onClick={() => setAdjustingItem(null)}
-                className="p-1 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                className="p-1 rounded-2xl text-[#765747] hover:text-[#38251F] hover:bg-[#F2E8DC] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -229,7 +229,7 @@ export const AdminInventoryPage: React.FC = () => {
 
             <form onSubmit={handleAdjustSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-[#38251F] uppercase tracking-wider mb-1.5">
                   New Quantity ({adjustingItem.unit}) *
                 </label>
                 <input
@@ -238,18 +238,18 @@ export const AdminInventoryPage: React.FC = () => {
                   required
                   value={newQuantity}
                   onChange={(e) => setNewQuantity(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 rounded-xl bg-oasis-dark border border-oasis-border text-white text-sm focus:outline-none focus:border-oasis-amber"
+                  className="w-full px-4 py-2.5 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-[#38251F] text-sm focus:outline-none focus:border-[#D92D20] shadow-inner transition-colors font-medium"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-[#38251F] uppercase tracking-wider mb-1.5">
                   Reason for Adjustment *
                 </label>
                 <select
                   value={adjustReason}
                   onChange={(e) => setAdjustReason(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-oasis-dark border border-oasis-border text-white text-xs focus:outline-none focus:border-oasis-amber"
+                  className="w-full px-3 py-2.5 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-[#38251F] text-xs focus:outline-none focus:border-[#D92D20] shadow-inner transition-colors font-medium"
                 >
                   <option value="manual_restock">Manual Restock / Shipment Received</option>
                   <option value="spoilage_adjustment">Kitchen Spoilage / Expired</option>
@@ -259,7 +259,7 @@ export const AdminInventoryPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-[#38251F] uppercase tracking-wider mb-1.5">
                   Audit Notes (Optional)
                 </label>
                 <input
@@ -267,7 +267,7 @@ export const AdminInventoryPage: React.FC = () => {
                   value={adjustNotes}
                   onChange={(e) => setAdjustNotes(e.target.value)}
                   placeholder="e.g. Received fresh batch from supplier"
-                  className="w-full px-4 py-2.5 rounded-xl bg-oasis-dark border border-oasis-border text-white text-xs focus:outline-none focus:border-oasis-amber"
+                  className="w-full px-4 py-2.5 rounded-2xl bg-[#FFF8EF] border border-[#F2E8DC] text-[#38251F] text-xs placeholder:text-[#765747] focus:outline-none focus:border-[#D92D20] shadow-inner transition-colors font-medium"
                 />
               </div>
 
@@ -275,14 +275,14 @@ export const AdminInventoryPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setAdjustingItem(null)}
-                  className="flex-1 py-2.5 rounded-xl border border-oasis-border bg-oasis-dark text-slate-300 hover:text-white text-xs font-semibold transition-colors"
+                  className="flex-1 py-2.5 rounded-2xl border border-[#F2E8DC] bg-[#FFF8EF] text-[#765747] hover:text-[#38251F] hover:bg-[#F2E8DC] text-xs font-bold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 py-2.5 rounded-xl bg-oasis-amber hover:bg-amber-400 text-oasis-dark text-xs font-bold transition-all"
+                  className="flex-1 py-2.5 rounded-2xl bg-[#D92D20] hover:bg-[#A91F18] text-white text-xs font-bold shadow-glow-red transition-all"
                 >
                   {saving ? 'Updating...' : 'Save Stock'}
                 </button>

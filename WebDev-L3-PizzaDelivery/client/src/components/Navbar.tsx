@@ -28,25 +28,25 @@ export const Navbar: React.FC = () => {
   };
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+    `px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
       isActive
-        ? 'text-oasis-red bg-oasis-red/10 border border-oasis-red/30'
-        : 'text-slate-300 hover:text-white hover:bg-white/5'
+        ? 'text-[#D92D20] bg-[#D92D20]/10 border border-[#D92D20]/25 shadow-sm'
+        : 'text-[#765747] hover:text-[#38251F] hover:bg-[#F2E8DC]/50'
     }`;
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-oasis-dark/85 border-b border-oasis-border/60 transition-all">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[#FFF8EF]/90 border-b border-[#F2E8DC] transition-all shadow-warm-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-oasis-red to-orange-600 flex items-center justify-center shadow-glow-red group-hover:scale-105 transition-transform">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#D92D20] to-[#A91F18] flex items-center justify-center shadow-glow-red group-hover:scale-105 transition-transform">
             <span className="text-xl">🍕</span>
           </div>
           <div>
-            <span className="font-serif text-2xl font-black tracking-tight text-white group-hover:text-oasis-red transition-colors">
-              OASIS <span className="text-oasis-amber font-sans font-light">PIZZA</span>
+            <span className="font-serif text-2xl font-black tracking-tight text-[#38251F] group-hover:text-[#D92D20] transition-colors">
+              OASIS <span className="text-[#D92D20] font-sans font-light">PIZZA</span>
             </span>
-            <span className="block text-[10px] text-oasis-muted tracking-widest uppercase font-semibold">
+            <span className="block text-[10px] text-[#765747] tracking-widest uppercase font-bold">
               Wood-Fired Artisanal
             </span>
           </div>
@@ -62,16 +62,16 @@ export const Navbar: React.FC = () => {
           </NavLink>
           <NavLink to="/builder" className={navLinkClass}>
             <span className="flex items-center gap-1.5">
-              <Flame className="w-4 h-4 text-oasis-amber animate-pulse" />
+              <Flame className="w-4 h-4 text-[#D97706] animate-pulse" />
               Pizza Builder
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-oasis-red text-white uppercase font-bold tracking-wider">
-                Custom
+              <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-[#D92D20] text-white uppercase font-extrabold tracking-wider">
+                Studio
               </span>
             </span>
           </NavLink>
           <NavLink to="/orders" className={navLinkClass}>
             <span className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-slate-400" />
+              <Clock className="w-4 h-4 text-[#765747]" />
               My Orders
             </span>
           </NavLink>
@@ -83,7 +83,7 @@ export const Navbar: React.FC = () => {
           {isAdmin && (
             <Link
               to="/admin/dashboard"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-oasis-amber/15 text-oasis-amber border border-oasis-amber/30 text-xs font-semibold hover:bg-oasis-amber/25 transition-colors"
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FEF3C7] text-[#D97706] border border-[#D97706]/30 text-xs font-bold hover:bg-[#FDE68A] transition-colors shadow-sm"
             >
               <Shield className="w-3.5 h-3.5" />
               Admin Portal
@@ -93,12 +93,12 @@ export const Navbar: React.FC = () => {
           {/* Cart Button */}
           <Link
             to="/cart"
-            className="relative p-2.5 rounded-xl border border-oasis-border bg-oasis-card hover:border-oasis-red/50 text-white transition-all hover:scale-105 active:scale-95"
+            className="relative p-2.5 rounded-xl border border-[#F2E8DC] bg-[#FFFCF7] hover:border-[#D92D20]/50 text-[#38251F] transition-all hover:scale-105 active:scale-95 shadow-warm-sm"
             aria-label="View Cart"
           >
-            <ShoppingBag className="w-5 h-5 text-oasis-light" />
+            <ShoppingBag className="w-5 h-5 text-[#38251F]" />
             {itemCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-oasis-red text-white text-[11px] font-bold flex items-center justify-center border-2 border-oasis-dark animate-bounce">
+              <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#D92D20] text-white text-[11px] font-extrabold flex items-center justify-center border-2 border-[#FFF8EF] animate-bounce shadow-sm">
                 {itemCount}
               </span>
             )}
@@ -109,34 +109,43 @@ export const Navbar: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-2.5 p-1.5 pr-3 rounded-xl border border-oasis-border bg-oasis-card hover:border-oasis-amber/50 transition-all text-left"
+                className="flex items-center gap-2.5 p-1.5 pr-3 rounded-2xl border border-[#F2E8DC] bg-[#FFFCF7] hover:border-[#D92D20]/50 transition-all text-left shadow-warm-sm"
               >
-                <div className="w-8 h-8 rounded-lg bg-oasis-amber/20 text-oasis-amber flex items-center justify-center font-bold text-sm">
+                <div className="w-8 h-8 rounded-xl bg-[#D92D20]/15 text-[#D92D20] flex items-center justify-center font-bold text-sm">
                   {user?.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="hidden lg:block">
-                  <p className="text-xs font-semibold text-white leading-none">{user?.name.split(' ')[0]}</p>
-                  <p className="text-[10px] text-oasis-muted uppercase tracking-wider">{user?.role}</p>
+                  <p className="text-xs font-bold text-[#38251F] leading-none">{user?.name.split(' ')[0]}</p>
+                  <p className="text-[10px] text-[#765747] uppercase tracking-wider font-semibold">{user?.role}</p>
                 </div>
               </button>
 
               {/* Dropdown Menu */}
               {userDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-56 rounded-2xl bg-oasis-card border border-oasis-border shadow-2xl p-2 z-50 animate-in fade-in-50 zoom-in-95"
+                  className="absolute right-0 mt-2 w-56 rounded-2xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-lg p-2 z-50 animate-in fade-in-50 zoom-in-95"
                   onMouseLeave={() => setUserDropdownOpen(false)}
                 >
-                  <div className="px-3 py-2 border-b border-oasis-border/60 mb-1">
-                    <p className="text-xs text-oasis-muted">Signed in as</p>
-                    <p className="text-sm font-semibold text-white truncate">{user?.email}</p>
+                  <div className="px-3 py-2 border-b border-[#F2E8DC] mb-1">
+                    <p className="text-xs text-[#765747]">Signed in as</p>
+                    <p className="text-sm font-bold text-[#38251F] truncate">{user?.email}</p>
                   </div>
+
+                  <Link
+                    to="/profile"
+                    onClick={() => setUserDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-sm text-[#765747] hover:text-[#38251F] hover:bg-[#F2E8DC]/50 rounded-xl transition-colors font-medium"
+                  >
+                    <UserIcon className="w-4 h-4 text-[#D92D20]" />
+                    My Profile
+                  </Link>
 
                   <Link
                     to="/orders"
                     onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                    className="flex items-center gap-2.5 px-3 py-2 text-sm text-[#765747] hover:text-[#38251F] hover:bg-[#F2E8DC]/50 rounded-xl transition-colors font-medium"
                   >
-                    <Clock className="w-4 h-4 text-oasis-amber" />
+                    <Clock className="w-4 h-4 text-[#D97706]" />
                     Order History
                   </Link>
 
@@ -144,7 +153,7 @@ export const Navbar: React.FC = () => {
                     <Link
                       to="/admin/dashboard"
                       onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-oasis-amber hover:bg-oasis-amber/10 rounded-xl transition-colors font-medium"
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-[#D97706] hover:bg-[#FEF3C7] rounded-xl transition-colors font-semibold"
                     >
                       <Shield className="w-4 h-4" />
                       Admin Dashboard
@@ -153,7 +162,7 @@ export const Navbar: React.FC = () => {
 
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors text-left mt-1 border-t border-oasis-border/60"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-[#D92D20] hover:bg-[#FDF2F2] rounded-xl transition-colors text-left mt-1 border-t border-[#F2E8DC] font-semibold"
                   >
                     <LogOut className="w-4 h-4" />
                     Sign Out
@@ -165,13 +174,13 @@ export const Navbar: React.FC = () => {
             <div className="hidden sm:flex items-center gap-2">
               <Link
                 to="/login"
-                className="px-4 py-2 rounded-xl text-sm font-medium text-slate-300 hover:text-white transition-colors"
+                className="px-4 py-2 rounded-xl text-sm font-semibold text-[#765747] hover:text-[#38251F] hover:bg-[#F2E8DC]/40 transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 to="/register"
-                className="px-4 py-2 rounded-xl text-sm font-semibold bg-oasis-red hover:bg-oasis-red-hover text-white transition-all shadow-md active:scale-95"
+                className="px-4 py-2 rounded-xl text-sm font-bold bg-[#D92D20] hover:bg-[#A91F18] text-white transition-all shadow-glow-red active:scale-95"
               >
                 Join Now
               </Link>
@@ -181,7 +190,7 @@ export const Navbar: React.FC = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl border border-oasis-border bg-oasis-card text-slate-300 hover:text-white"
+            className="md:hidden p-2 rounded-xl border border-[#F2E8DC] bg-[#FFFCF7] text-[#38251F] hover:bg-[#F2E8DC]/40 shadow-warm-sm"
             aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
@@ -191,45 +200,56 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-oasis-border/60 bg-oasis-dark/95 backdrop-blur-2xl px-4 py-5 space-y-3 animate-in slide-in-from-top-4">
+        <div className="md:hidden border-t border-[#F2E8DC] bg-[#FFF8EF] px-4 py-5 space-y-3 shadow-warm-lg animate-in slide-in-from-top-4">
           <Link
             to="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="block px-4 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 font-medium"
+            className="block px-4 py-2.5 rounded-xl text-[#38251F] hover:bg-[#F2E8DC]/60 font-semibold text-sm"
           >
             Home
           </Link>
           <Link
             to="/menu"
             onClick={() => setMobileMenuOpen(false)}
-            className="block px-4 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 font-medium"
+            className="block px-4 py-2.5 rounded-xl text-[#38251F] hover:bg-[#F2E8DC]/60 font-semibold text-sm"
           >
             Craft Menu
           </Link>
           <Link
             to="/builder"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-between px-4 py-2.5 rounded-xl text-oasis-amber bg-oasis-amber/10 border border-oasis-amber/20 font-medium"
+            className="flex items-center justify-between px-4 py-2.5 rounded-xl text-[#D92D20] bg-[#D92D20]/10 border border-[#D92D20]/25 font-bold text-sm"
           >
             <span className="flex items-center gap-2">
-              <Flame className="w-4 h-4 text-oasis-amber" />
+              <Flame className="w-4 h-4 text-[#D97706]" />
               Custom Pizza Builder
             </span>
-            <span className="text-xs bg-oasis-red text-white px-2 py-0.5 rounded-full font-bold">NEW</span>
+            <span className="text-[10px] bg-[#D92D20] text-white px-2 py-0.5 rounded-full font-extrabold uppercase">HOT</span>
           </Link>
           <Link
             to="/orders"
             onClick={() => setMobileMenuOpen(false)}
-            className="block px-4 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 font-medium"
+            className="block px-4 py-2.5 rounded-xl text-[#38251F] hover:bg-[#F2E8DC]/60 font-semibold text-sm"
           >
             My Orders
           </Link>
+
+          {isAuthenticated && (
+            <Link
+              to="/profile"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[#38251F] hover:bg-[#F2E8DC]/60 font-semibold text-sm"
+            >
+              <UserIcon className="w-4 h-4 text-[#D92D20]" />
+              My Profile
+            </Link>
+          )}
 
           {isAdmin && (
             <Link
               to="/admin/dashboard"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-oasis-amber bg-oasis-amber/15 border border-oasis-amber/30 font-medium"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[#D97706] bg-[#FEF3C7] border border-[#D97706]/30 font-bold text-sm"
             >
               <Shield className="w-4 h-4" />
               Admin Portal
@@ -237,18 +257,18 @@ export const Navbar: React.FC = () => {
           )}
 
           {!isAuthenticated && (
-            <div className="pt-4 border-t border-oasis-border/60 flex flex-col gap-2">
+            <div className="pt-4 border-t border-[#F2E8DC] flex flex-col gap-2">
               <Link
                 to="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2.5 rounded-xl border border-oasis-border text-white font-medium"
+                className="w-full text-center py-2.5 rounded-xl border border-[#F2E8DC] bg-[#FFFCF7] text-[#38251F] font-bold text-sm shadow-warm-sm"
               >
                 Sign In
               </Link>
               <Link
                 to="/register"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2.5 rounded-xl bg-oasis-red text-white font-semibold shadow-md"
+                className="w-full text-center py-2.5 rounded-xl bg-[#D92D20] text-white font-bold text-sm shadow-glow-red"
               >
                 Register Account
               </Link>

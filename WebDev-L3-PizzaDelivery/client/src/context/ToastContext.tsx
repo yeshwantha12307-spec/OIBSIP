@@ -42,36 +42,36 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <ToastContext.Provider value={{ showToast, removeToast }}>
       {children}
       {/* Toast container floating bottom-right */}
-      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-md w-full px-4 pointer-events-none">
+      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-md w-full px-4 pointer-events-none">
         {toasts.map((toast) => {
           const icons = {
-            success: <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />,
-            error: <AlertCircle className="w-5 h-5 text-oasis-red shrink-0" />,
-            warning: <AlertTriangle className="w-5 h-5 text-oasis-amber shrink-0" />,
-            info: <Info className="w-5 h-5 text-sky-400 shrink-0" />,
+            success: <CheckCircle2 className="w-5 h-5 text-[#198754] shrink-0" />,
+            error: <AlertCircle className="w-5 h-5 text-[#D92D20] shrink-0" />,
+            warning: <AlertTriangle className="w-5 h-5 text-[#D97706] shrink-0" />,
+            info: <Info className="w-5 h-5 text-[#2563EB] shrink-0" />,
           };
 
           const borders = {
-            success: 'border-emerald-500/40 bg-oasis-card/95',
-            error: 'border-oasis-red/40 bg-oasis-card/95',
-            warning: 'border-oasis-amber/40 bg-oasis-card/95',
-            info: 'border-sky-500/40 bg-oasis-card/95',
+            success: 'border-[#198754]/30 bg-[#FFFCF7]',
+            error: 'border-[#D92D20]/30 bg-[#FFFCF7]',
+            warning: 'border-[#D97706]/30 bg-[#FFFCF7]',
+            info: 'border-[#2563EB]/30 bg-[#FFFCF7]',
           };
 
           return (
             <div
               key={toast.id}
-              className={`pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-xl border shadow-2xl backdrop-blur-md transition-all duration-300 animate-in slide-in-from-bottom-3 ${
+              className={`pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-2xl border shadow-warm-lg transition-all duration-300 animate-in slide-in-from-bottom-3 ${
                 borders[toast.type]
               }`}
             >
               <div className="flex items-center gap-3">
                 {icons[toast.type]}
-                <p className="text-sm font-medium text-oasis-light leading-snug">{toast.message}</p>
+                <p className="text-sm font-semibold text-[#38251F] leading-snug">{toast.message}</p>
               </div>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="text-oasis-muted hover:text-white transition-colors p-1"
+                className="text-[#765747] hover:text-[#38251F] transition-colors p-1"
                 aria-label="Dismiss notification"
               >
                 <X className="w-4 h-4" />
