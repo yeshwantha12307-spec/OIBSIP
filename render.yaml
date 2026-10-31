@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: oasis-pizza-server
+    runtime: node
+    rootDir: WebDev-L3-PizzaDelivery/server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: ADMIN_ALERT_EMAIL
+        value: admin@oasispizza.com
+      - key: INVENTORY_CRON_SCHEDULE
+        value: "0 * * * *"
