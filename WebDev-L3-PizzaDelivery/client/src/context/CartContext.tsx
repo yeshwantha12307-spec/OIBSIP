@@ -3,7 +3,7 @@ import { CartItem } from '../types/index.js';
 
 interface CartContextType {
   cart: CartItem[];
-  addItem: (item: Omit<CartItem, 'cartItemId'>) => void;
+  addItem: (item: Omit<CartItem, 'cartItemId'>, openDrawer?: boolean) => void;
   removeItem: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, quantity: number) => void;
   clearCart: () => void;
@@ -12,6 +12,11 @@ interface CartContextType {
   tax: number;
   deliveryFee: number;
   grandTotal: number;
+  // Drawer controls
+  isCartDrawerOpen: boolean;
+  openCartDrawer: () => void;
+  closeCartDrawer: () => void;
+  toggleCartDrawer: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -26,6 +31,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   });
 
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+
   useEffect(() => {
     try {
       localStorage.setItem('oasis_cart', JSON.stringify(cart));
@@ -34,7 +41,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [cart]);
 
-  const addItem = (item: Omit<CartItem, 'cartItemId'>) => {
+  const addItem = (item: Omit<CartItem, 'cartItemId'>, openDrawer: boolean = true) => {
     setCart((prev) => {
       // If it's a preset pizza and exact same pizza already in cart, increment quantity
       if (item.type === 'preset' && item.pizzaId) {
@@ -50,6 +57,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const cartItemId = `cart_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
       return [...prev, { ...item, cartItemId }];
     });
+
+    if (openDrawer) {
+      setIsCartDrawerOpen(true);
+    }
   };
 
   const removeItem = (cartItemId: string) => {
@@ -90,6 +101,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         tax,
         deliveryFee,
         grandTotal,
+        isCartDrawerOpen,
+        openCartDrawer: () => setIsCartDrawerOpen(true),
+        closeCartDrawer: () => setIsCartDrawerOpen(false),
+        toggleCartDrawer: () => setIsCartDrawerOpen((prev) => !prev),
       }}
     >
       {children}

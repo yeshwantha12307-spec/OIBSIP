@@ -14,6 +14,7 @@ import {
 import { useCart } from '../context/CartContext.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useToast } from '../context/ToastContext.js';
+import { useFulfillment } from '../context/FulfillmentContext.js';
 import { api } from '../api/client.js';
 
 declare global {
@@ -26,15 +27,16 @@ export const CheckoutPage: React.FC = () => {
   const { cart, subtotal, tax, deliveryFee, grandTotal, clearCart } = useCart();
   const { user, isAuthenticated } = useAuth();
   const { showToast } = useToast();
+  const { mode, selectedOutlet, deliveryAddress: contextAddress, updateDeliveryAddress } = useFulfillment();
   const navigate = useNavigate();
 
   const [deliveryAddress, setDeliveryAddress] = useState({
-    street: '',
-    city: 'Mumbai',
-    state: 'Maharashtra',
-    postalCode: '',
-    phone: '',
-    instructions: '',
+    street: contextAddress.street || '',
+    city: contextAddress.city || 'Mumbai',
+    state: contextAddress.state || 'Maharashtra',
+    postalCode: contextAddress.postalCode || '',
+    phone: contextAddress.phone || '',
+    instructions: contextAddress.instructions || '',
   });
 
   const [isProcessing, setIsProcessing] = useState(false);

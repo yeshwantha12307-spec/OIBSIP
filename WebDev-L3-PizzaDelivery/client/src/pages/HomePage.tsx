@@ -12,14 +12,17 @@ import {
   ChevronRight,
   Star,
   CheckCircle2,
+  Tag,
 } from 'lucide-react';
 import { PizzaCard } from '../components/PizzaCard.js';
 import { PizzaCardSkeleton } from '../components/SkeletonLoader.js';
+import { DealsCarousel } from '../components/DealsCarousel.js';
 import { Pizza } from '../types/index.js';
 import { api } from '../api/client.js';
 
 export const HomePage: React.FC = () => {
   const [featuredPizzas, setFeaturedPizzas] = useState<Pizza[]>([]);
+  const [allPizzas, setAllPizzas] = useState<Pizza[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,6 +30,7 @@ export const HomePage: React.FC = () => {
       try {
         const res = await api.get('/pizzas');
         if (res.success && Array.isArray(res.data)) {
+          setAllPizzas(res.data);
           setFeaturedPizzas(res.data.slice(0, 3));
         }
       } catch (err) {
@@ -39,11 +43,10 @@ export const HomePage: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-24 pb-12">
-      {/* 1. Hero Section */}
-      <section className="relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24">
-        {/* Subtle Ambient Radial Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-[#D92D20]/10 via-[#F59E0B]/12 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+    <div className="space-y-20 pb-16 overflow-hidden">
+      {/* 1. Hero Section (Artisan Wood-Fired QSR Style) */}
+      <section className="relative overflow-hidden pt-8 pb-14 lg:pt-14 lg:pb-20">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-[#D92D20]/10 via-[#F59E0B]/12 to-transparent rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -51,7 +54,7 @@ export const HomePage: React.FC = () => {
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D92D20]/10 border border-[#D92D20]/25 text-[#D92D20] text-xs font-bold uppercase tracking-wider shadow-sm">
                 <Flame className="w-4 h-4 text-[#D92D20] animate-pulse" />
-                Artisan Wood-Fired Pizzeria
+                Artisan Wood-Stone Pizzeria
               </div>
 
               <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-black text-[#38251F] leading-[1.08] tracking-tight">
@@ -72,7 +75,7 @@ export const HomePage: React.FC = () => {
                   className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#D92D20] hover:bg-[#A91F18] text-white font-extrabold text-base flex items-center justify-center gap-3 shadow-glow-red hover:scale-105 active:scale-95 transition-all"
                 >
                   <Flame className="w-5 h-5 text-[#FEF3C7]" />
-                  Build Custom Pizza
+                  <span>Build Custom Pizza</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 
@@ -92,7 +95,7 @@ export const HomePage: React.FC = () => {
                 </div>
                 <div className="text-center lg:text-left border-x border-[#F2E8DC] px-4">
                   <span className="font-serif text-2xl font-black text-[#D97706] block">30 Mins</span>
-                  <span className="text-xs text-[#765747] font-medium">Average Delivery</span>
+                  <span className="text-xs text-[#765747] font-medium">Fast Delivery</span>
                 </div>
                 <div className="text-center lg:text-left">
                   <span className="font-serif text-2xl font-black text-[#198754] block">100%</span>
@@ -104,17 +107,14 @@ export const HomePage: React.FC = () => {
             {/* Right Column: Hero Pizza Showcase */}
             <div className="lg:col-span-5 relative flex items-center justify-center">
               <div className="relative w-full max-w-md aspect-square">
-                {/* Rotating Outer Glow */}
-                <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-[#D92D20]/25 via-[#D97706]/20 to-[#A91F18]/25 blur-2xl animate-pulse"></div>
+                <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-[#D92D20]/25 via-[#D97706]/20 to-[#A91F18]/25 blur-2xl animate-pulse" />
 
-                {/* Hero Pizza Image */}
                 <img
                   src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1000&q=80"
                   alt="Oasis Signature Wood Fired Pizza"
                   className="relative z-10 w-full h-full object-cover rounded-full shadow-warm-lg border-8 border-[#FFFCF7] hover:rotate-6 transition-transform duration-700 select-none"
                 />
 
-                {/* Floating Hot Badge */}
                 <div className="absolute -bottom-2 -left-2 z-20 bg-[#FFFCF7]/95 backdrop-blur-md border border-[#F2E8DC] p-4 rounded-3xl shadow-warm-lg flex items-center gap-3">
                   <div className="w-11 h-11 rounded-2xl bg-[#D92D20]/15 text-[#D92D20] flex items-center justify-center">
                     <ChefHat className="w-6 h-6" />
@@ -125,7 +125,6 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Floating Temperature Badge */}
                 <div className="absolute -top-2 -right-2 z-20 bg-[#FFFCF7]/95 backdrop-blur-md border border-[#F2E8DC] p-3.5 rounded-2xl shadow-warm-lg flex items-center gap-2.5">
                   <Flame className="w-5 h-5 text-[#D97706]" />
                   <span className="text-xs font-bold text-[#38251F]">450°C Stone Oven</span>
@@ -136,54 +135,14 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. Value Pillars */}
+      {/* 2. KFC-Style Value Deals & Hot Combos Bucket */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-7 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm hover:shadow-warm-md hover:border-[#D92D20]/40 transition-all hover:-translate-y-1">
-            <div className="w-12 h-12 rounded-2xl bg-[#D92D20]/10 text-[#D92D20] flex items-center justify-center mb-4">
-              <Layers className="w-6 h-6" />
-            </div>
-            <h3 className="font-serif text-lg font-bold text-[#38251F] mb-2">5 Bases & 5 Sauces</h3>
-            <p className="text-sm text-[#765747] leading-relaxed">
-              From Italian Thin Crust to Double Cheese Burst and cauliflower crust, paired with craft sauces.
-            </p>
-          </div>
-
-          <div className="p-7 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm hover:shadow-warm-md hover:border-[#D97706]/40 transition-all hover:-translate-y-1">
-            <div className="w-12 h-12 rounded-2xl bg-[#D97706]/10 text-[#D97706] flex items-center justify-center mb-4">
-              <Award className="w-6 h-6" />
-            </div>
-            <h3 className="font-serif text-lg font-bold text-[#38251F] mb-2">Handmade Daily</h3>
-            <p className="text-sm text-[#765747] leading-relaxed">
-              Every sourdough ball is hand-stretched and stone-fired upon order. Zero artificial additives.
-            </p>
-          </div>
-
-          <div className="p-7 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm hover:shadow-warm-md hover:border-[#198754]/40 transition-all hover:-translate-y-1">
-            <div className="w-12 h-12 rounded-2xl bg-[#198754]/10 text-[#198754] flex items-center justify-center mb-4">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <h3 className="font-serif text-lg font-bold text-[#38251F] mb-2">Razorpay Test Pay</h3>
-            <p className="text-sm text-[#765747] leading-relaxed">
-              Instant sandbox test payments with HMAC SHA-256 cryptographic signature verification.
-            </p>
-          </div>
-
-          <div className="p-7 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm hover:shadow-warm-md hover:border-[#2563EB]/40 transition-all hover:-translate-y-1">
-            <div className="w-12 h-12 rounded-2xl bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center mb-4">
-              <Clock className="w-6 h-6" />
-            </div>
-            <h3 className="font-serif text-lg font-bold text-[#38251F] mb-2">Live Order Tracking</h3>
-            <p className="text-sm text-[#765747] leading-relaxed">
-              Watch your pizza progress from kitchen prep to hot delivery with 5-second live status polling.
-            </p>
-          </div>
-        </div>
+        <DealsCarousel pizzas={allPizzas} />
       </section>
 
       {/* 3. Featured Chef's Craft Pizzas */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="text-xs font-bold text-[#D92D20] uppercase tracking-widest block mb-2">
               Signature Menu
@@ -219,7 +178,7 @@ export const HomePage: React.FC = () => {
       {/* 4. Custom Pizza Builder Teaser Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] p-8 sm:p-12 lg:p-16 shadow-warm-lg">
-          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-[#D92D20]/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-[#D92D20]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
             <div className="lg:col-span-8 space-y-4">
@@ -239,7 +198,7 @@ export const HomePage: React.FC = () => {
                   className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-[#D92D20] hover:bg-[#A91F18] text-white font-extrabold text-base shadow-glow-red transition-all active:scale-95"
                 >
                   <Flame className="w-5 h-5 text-[#FEF3C7]" />
-                  Launch Pizza Builder Studio
+                  <span>Launch Pizza Builder Studio</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -306,80 +265,6 @@ export const HomePage: React.FC = () => {
             <p className="text-xs text-[#765747] leading-relaxed">
               Track kitchen preparation and delivery in real time with live polling order updates.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Customer Testimonials */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-          <span className="text-xs font-bold text-[#D92D20] uppercase tracking-widest block">
-            Love From Pizza Lovers
-          </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-black text-[#38251F]">
-            What Our Guests Are Saying
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-7 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm space-y-4">
-            <div className="flex items-center text-amber-500">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} className="w-4 h-4 fill-current" />
-              ))}
-            </div>
-            <p className="text-sm text-[#765747] italic leading-relaxed">
-              "The Truffle Cremini Melt with garlic alfredo sauce was out of this world! The crust has that authentic Neapolitan char and chew."
-            </p>
-            <div className="flex items-center gap-3 pt-2 border-t border-[#F2E8DC]">
-              <div className="w-9 h-9 rounded-full bg-[#D92D20]/15 text-[#D92D20] flex items-center justify-center font-bold text-xs">
-                AR
-              </div>
-              <div>
-                <p className="text-xs font-bold text-[#38251F]">Ananya Rao</p>
-                <p className="text-[10px] text-[#765747]">Verified Gourmet Enthusiast</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-7 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm space-y-4">
-            <div className="flex items-center text-amber-500">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} className="w-4 h-4 fill-current" />
-              ))}
-            </div>
-            <p className="text-sm text-[#765747] italic leading-relaxed">
-              "Building custom pizzas using the interactive studio is super intuitive. My kids loved seeing toppings appear in real time on the screen!"
-            </p>
-            <div className="flex items-center gap-3 pt-2 border-t border-[#F2E8DC]">
-              <div className="w-9 h-9 rounded-full bg-[#D97706]/15 text-[#D97706] flex items-center justify-center font-bold text-xs">
-                MK
-              </div>
-              <div>
-                <p className="text-xs font-bold text-[#38251F]">Manish Kapoor</p>
-                <p className="text-[10px] text-[#765747]">Weekly Family Customer</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-7 rounded-3xl bg-[#FFFCF7] border border-[#F2E8DC] shadow-warm-sm space-y-4">
-            <div className="flex items-center text-amber-500">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} className="w-4 h-4 fill-current" />
-              ))}
-            </div>
-            <p className="text-sm text-[#765747] italic leading-relaxed">
-              "Order tracking kept us updated every step of the way. Arrived piping hot in under 28 minutes. 10/10 recommended!"
-            </p>
-            <div className="flex items-center gap-3 pt-2 border-t border-[#F2E8DC]">
-              <div className="w-9 h-9 rounded-full bg-[#198754]/15 text-[#198754] flex items-center justify-center font-bold text-xs">
-                PS
-              </div>
-              <div>
-                <p className="text-xs font-bold text-[#38251F]">Pooja Sharma</p>
-                <p className="text-[10px] text-[#765747]">Artisan Food Reviewer</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>

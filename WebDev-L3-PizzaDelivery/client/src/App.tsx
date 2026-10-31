@@ -3,8 +3,11 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { ToastProvider } from './context/ToastContext.js';
 import { AuthProvider, useAuth } from './context/AuthContext.js';
 import { CartProvider } from './context/CartContext.js';
+import { FulfillmentProvider } from './context/FulfillmentContext.js';
 import { Navbar } from './components/Navbar.js';
 import { Footer } from './components/Footer.js';
+import { CartDrawer } from './components/CartDrawer.js';
+import { FulfillmentModal } from './components/FulfillmentModal.js';
 import { ProtectedRoute } from './components/ProtectedRoute.js';
 import { AppLoader } from './components/AppLoader.js';
 
@@ -63,12 +66,14 @@ const AppContent: React.FC = () => {
   }, [previewLoader]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFF8EF] text-[#38251F] selection:bg-[#D92D20] selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#FFF8EF] text-[#38251F] selection:bg-[#D92D20] selection:text-white overflow-x-hidden">
       <ScrollToTop />
       <AppLoader
         isLoading={isLoading || previewLoader}
         onClose={previewLoader ? () => setPreviewLoader(false) : undefined}
       />
+      <CartDrawer />
+      <FulfillmentModal />
       
       <Routes>
         {/* Dedicated Admin Login */}
@@ -165,7 +170,9 @@ export const App: React.FC = () => {
       <ToastProvider>
         <AuthProvider>
           <CartProvider>
-            <AppContent />
+            <FulfillmentProvider>
+              <AppContent />
+            </FulfillmentProvider>
           </CartProvider>
         </AuthProvider>
       </ToastProvider>

@@ -11,15 +11,21 @@ import {
   Clock,
   Compass,
   Sparkles,
+  MapPin,
+  ChevronDown,
+  Tag,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { useCart } from '../context/CartContext.js';
+import { useFulfillment } from '../context/FulfillmentContext.js';
 
 export const Navbar: React.FC = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
-  const { itemCount } = useCart();
+  const { itemCount, openCartDrawer } = useCart();
+  const { mode, selectedOutlet, deliveryAddress, openFulfillmentModal } = useFulfillment();
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const handleLogout = () => {
@@ -29,18 +35,55 @@ export const Navbar: React.FC = () => {
   };
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
+    `px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
       isActive
-        ? 'text-[#D92D20] bg-[#D92D20]/10 border border-[#D92D20]/25 shadow-sm'
-        : 'text-[#765747] hover:text-[#38251F] hover:bg-[#F2E8DC]/50'
+        ? 'bg-[#D92D20] text-white shadow-glow-red'
+        : 'text-[#38251F] hover:text-[#D92D20] hover:bg-[#F2E8DC]/50'
     }`;
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[#FFF8EF]/90 border-b border-[#F2E8DC] transition-all shadow-warm-sm">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[#FFF8EF]/95 border-b border-[#F2E8DC] transition-all shadow-warm-sm">
+      {/* 1. Persistent Top Fulfillment Bar (KFC/Domino's Model) */}
+      <div className="bg-[#1C1310] text-[#FFFCF7] px-4 sm:px-6 lg:px-8 py-1.5 border-b border-[#38251F] flex items-center justify-between text-xs">
+        <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
+          <button
+            type="button"
+            onClick={openFulfillmentModal}
+            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D92D20] text-white text-[11px] font-extrabold uppercase tracking-wider hover:bg-[#B91C1C] transition-colors shrink-0 shadow-sm"
+          >
+            {mode === 'delivery' ? '🛵 Delivery' : '🥡 Takeaway'}
+            <ChevronDown className="w-3 h-3" />
+          </button>
+
+          <span
+            onClick={openFulfillmentModal}
+            className="text-[11px] text-amber-200/90 font-medium truncate cursor-pointer hover:underline flex items-center gap-1"
+          >
+            <MapPin className="w-3 h-3 text-[#F59E0B] shrink-0" />
+            {mode === 'delivery' ? (
+              <span>{deliveryAddress.street}, {deliveryAddress.city}</span>
+            ) : (
+              <span>Pick up at <strong>{selectedOutlet.name}</strong> ({selectedOutlet.neighborhood})</span>
+            )}
+          </span>
+        </div>
+
+        {/* Right Info */}
+        <div className="hidden sm:flex items-center gap-4 text-[11px] text-amber-100/70 font-semibold shrink-0">
+          <span className="flex items-center gap-1 text-[#F59E0B]">
+            <Clock className="w-3 h-3" />
+            {mode === 'delivery' ? 'ETA ~30-35 mins' : `Pickup in ~${selectedOutlet.pickupTimeMin} mins`}
+          </span>
+          <span className="hidden md:inline text-white/30">•</span>
+          <span className="hidden md:inline">🔥 450°C Wood-Fired Live</span>
+        </div>
+      </div>
+
+      {/* 2. Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative w-11 h-11 rounded-full p-0.5 bg-gradient-to-br from-[#F59E0B] via-[#D92D20] to-[#78350F] shadow-[0_0_15px_rgba(217,45,32,0.35)] group-hover:scale-105 transition-all overflow-hidden shrink-0">
+        {/* Brand Logo */}
+        <Link to="/" className="flex items-center gap-3 group shrink-0">
+          <div className="relative w-12 h-12 rounded-full p-0.5 bg-gradient-to-br from-[#F59E0B] via-[#D92D20] to-[#78350F] shadow-[0_0_16px_rgba(217,45,32,0.4)] group-hover:scale-105 transition-all overflow-hidden shrink-0">
             <img
               src="/oasis-logo.png"
               alt="Oasis Pizza Logo"
@@ -48,17 +91,17 @@ export const Navbar: React.FC = () => {
             />
           </div>
           <div>
-            <span className="font-serif text-2xl font-black tracking-tight text-[#38251F] group-hover:text-[#D92D20] transition-colors">
+            <span className="font-serif text-2xl font-black tracking-tight text-[#38251F] group-hover:text-[#D92D20] transition-colors leading-tight block">
               OASIS <span className="text-[#D92D20] font-sans font-light">PIZZA</span>
             </span>
-            <span className="block text-[10px] text-[#765747] tracking-widest uppercase font-bold">
+            <span className="block text-[10px] text-[#765747] tracking-widest uppercase font-extrabold">
               Wood-Fired Artisanal
             </span>
           </div>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-2">
+        <nav className="hidden md:flex items-center gap-1.5">
           <NavLink to="/" className={navLinkClass}>
             Home
           </NavLink>
@@ -68,9 +111,9 @@ export const Navbar: React.FC = () => {
           <NavLink to="/builder" className={navLinkClass}>
             <span className="flex items-center gap-1.5">
               <Flame className="w-4 h-4 text-[#D97706] animate-pulse" />
-              Pizza Builder
+              Pizza Studio
               <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-[#D92D20] text-white uppercase font-extrabold tracking-wider">
-                Studio
+                Builder
               </span>
             </span>
           </NavLink>
@@ -82,16 +125,16 @@ export const Navbar: React.FC = () => {
           </NavLink>
         </nav>
 
-        {/* Right Action Icons: Cart & Profile */}
-        <div className="flex items-center gap-3">
+        {/* Right Action Icons: Animation Preview, Cart & Profile */}
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Admin shortcut if admin */}
           {isAdmin && (
             <Link
               to="/admin/dashboard"
-              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FEF3C7] text-[#D97706] border border-[#D97706]/30 text-xs font-bold hover:bg-[#FDE68A] transition-colors shadow-sm"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#FEF3C7] text-[#D97706] border border-[#D97706]/30 text-xs font-bold hover:bg-[#FDE68A] transition-colors shadow-sm"
             >
               <Shield className="w-3.5 h-3.5" />
-              Admin Portal
+              Admin
             </Link>
           )}
 
@@ -100,25 +143,29 @@ export const Navbar: React.FC = () => {
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent('oasis-preview-loader'))}
             title="Preview Hearth Loading Animation"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#D92D20]/10 via-[#F59E0B]/10 to-[#D92D20]/10 hover:from-[#D92D20]/20 hover:to-[#F59E0B]/20 border border-[#F59E0B]/30 text-[#D97706] hover:text-[#D92D20] text-xs font-bold transition-all shadow-warm-sm group"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#D92D20]/10 via-[#F59E0B]/10 to-[#D92D20]/10 hover:from-[#D92D20]/20 hover:to-[#F59E0B]/20 border border-[#F59E0B]/30 text-[#D97706] hover:text-[#D92D20] text-xs font-bold transition-all shadow-warm-sm group"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#F59E0B] group-hover:rotate-45 transition-transform" />
-            <span className="hidden sm:inline">Animation Preview</span>
+            <span>Hearth Loader</span>
           </button>
 
-          {/* Cart Button */}
-          <Link
-            to="/cart"
-            className="relative p-2.5 rounded-xl border border-[#F2E8DC] bg-[#FFFCF7] hover:border-[#D92D20]/50 text-[#38251F] transition-all hover:scale-105 active:scale-95 shadow-warm-sm"
+          {/* Slide-in Express Cart Drawer Trigger Button */}
+          <button
+            type="button"
+            onClick={openCartDrawer}
+            className="relative p-2.5 sm:px-3.5 sm:py-2.5 rounded-xl border border-[#F2E8DC] bg-[#FFFCF7] hover:border-[#D92D20]/50 text-[#38251F] transition-all hover:scale-105 active:scale-95 shadow-warm-sm flex items-center gap-2"
             aria-label="View Cart"
           >
-            <ShoppingBag className="w-5 h-5 text-[#38251F]" />
+            <ShoppingBag className="w-5 h-5 text-[#D92D20]" />
+            <span className="hidden sm:inline font-serif font-black text-xs text-[#38251F]">
+              Cart
+            </span>
             {itemCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#D92D20] text-white text-[11px] font-extrabold flex items-center justify-center border-2 border-[#FFF8EF] animate-bounce shadow-sm">
+              <span className="sm:static absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#D92D20] text-white text-[11px] font-extrabold flex items-center justify-center border-2 border-[#FFF8EF] animate-bounce shadow-sm">
                 {itemCount}
               </span>
             )}
-          </Link>
+          </button>
 
           {/* User Account Button & Dropdown */}
           {isAuthenticated ? (
@@ -169,126 +216,93 @@ export const Navbar: React.FC = () => {
                     <Link
                       to="/admin/dashboard"
                       onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-[#D97706] hover:bg-[#FEF3C7] rounded-xl transition-colors font-semibold"
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-[#D97706] hover:bg-[#FEF3C7] rounded-xl transition-colors font-medium"
                     >
                       <Shield className="w-4 h-4" />
-                      Admin Dashboard
+                      Admin Console
                     </Link>
                   )}
 
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-[#D92D20] hover:bg-[#FDF2F2] rounded-xl transition-colors text-left mt-1 border-t border-[#F2E8DC] font-semibold"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Sign Out
-                  </button>
+                  <div className="pt-1 mt-1 border-t border-[#F2E8DC]">
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-[#D92D20] hover:bg-[#FDF2F2] rounded-xl transition-colors font-medium"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           ) : (
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Link
                 to="/login"
-                className="px-4 py-2 rounded-xl text-sm font-semibold text-[#765747] hover:text-[#38251F] hover:bg-[#F2E8DC]/40 transition-colors"
+                className="px-3.5 py-2 rounded-xl text-xs font-bold text-[#38251F] hover:text-[#D92D20] hover:bg-[#F2E8DC]/40 transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 to="/register"
-                className="px-4 py-2 rounded-xl text-sm font-bold bg-[#D92D20] hover:bg-[#A91F18] text-white transition-all shadow-glow-red active:scale-95"
+                className="hidden sm:inline-flex px-4 py-2 rounded-xl text-xs font-bold bg-[#D92D20] hover:bg-[#A91F18] text-white shadow-glow-red transition-all hover:scale-105 active:scale-95"
               >
-                Join Now
+                Register
               </Link>
             </div>
           )}
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Toggle Button */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl border border-[#F2E8DC] bg-[#FFFCF7] text-[#38251F] hover:bg-[#F2E8DC]/40 shadow-warm-sm"
-            aria-label="Toggle Navigation Menu"
+            onClick={() => setMobileNavOpen(!mobileNavOpen)}
+            className="md:hidden p-2 rounded-xl text-[#38251F] hover:bg-[#F2E8DC]/50 border border-[#F2E8DC]"
+            aria-label="Toggle mobile menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
+            {mobileNavOpen ? <X className="w-5 h-5" /> : <MenuIcon className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Navigation Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[#F2E8DC] bg-[#FFF8EF] px-4 py-5 space-y-3 shadow-warm-lg animate-in slide-in-from-top-4">
-          <Link
+      {/* Mobile Drawer */}
+      {mobileNavOpen && (
+        <div className="md:hidden bg-[#FFFCF7] border-b border-[#F2E8DC] p-4 space-y-3 animate-in slide-in-from-top-3">
+          <NavLink
             to="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-4 py-2.5 rounded-xl text-[#38251F] hover:bg-[#F2E8DC]/60 font-semibold text-sm"
+            onClick={() => setMobileNavOpen(false)}
+            className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#38251F] hover:bg-[#F2E8DC]/40"
           >
             Home
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to="/menu"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-4 py-2.5 rounded-xl text-[#38251F] hover:bg-[#F2E8DC]/60 font-semibold text-sm"
+            onClick={() => setMobileNavOpen(false)}
+            className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#38251F] hover:bg-[#F2E8DC]/40"
           >
             Craft Menu
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to="/builder"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-between px-4 py-2.5 rounded-xl text-[#D92D20] bg-[#D92D20]/10 border border-[#D92D20]/25 font-bold text-sm"
+            onClick={() => setMobileNavOpen(false)}
+            className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#D92D20] hover:bg-[#F2E8DC]/40"
           >
-            <span className="flex items-center gap-2">
-              <Flame className="w-4 h-4 text-[#D97706]" />
-              Custom Pizza Builder
-            </span>
-            <span className="text-[10px] bg-[#D92D20] text-white px-2 py-0.5 rounded-full font-extrabold uppercase">HOT</span>
-          </Link>
-          <Link
+            🔥 Custom Pizza Studio
+          </NavLink>
+          <NavLink
             to="/orders"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-4 py-2.5 rounded-xl text-[#38251F] hover:bg-[#F2E8DC]/60 font-semibold text-sm"
+            onClick={() => setMobileNavOpen(false)}
+            className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#38251F] hover:bg-[#F2E8DC]/40"
           >
             My Orders
-          </Link>
-
-          {isAuthenticated && (
-            <Link
-              to="/profile"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[#38251F] hover:bg-[#F2E8DC]/60 font-semibold text-sm"
-            >
-              <UserIcon className="w-4 h-4 text-[#D92D20]" />
-              My Profile
-            </Link>
-          )}
+          </NavLink>
 
           {isAdmin && (
-            <Link
+            <NavLink
               to="/admin/dashboard"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[#D97706] bg-[#FEF3C7] border border-[#D97706]/30 font-bold text-sm"
+              onClick={() => setMobileNavOpen(false)}
+              className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#D97706] bg-[#FEF3C7]"
             >
-              <Shield className="w-4 h-4" />
-              Admin Portal
-            </Link>
-          )}
-
-          {!isAuthenticated && (
-            <div className="pt-4 border-t border-[#F2E8DC] flex flex-col gap-2">
-              <Link
-                to="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2.5 rounded-xl border border-[#F2E8DC] bg-[#FFFCF7] text-[#38251F] font-bold text-sm shadow-warm-sm"
-              >
-                Sign In
-              </Link>
-              <Link
-                to="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2.5 rounded-xl bg-[#D92D20] text-white font-bold text-sm shadow-glow-red"
-              >
-                Register Account
-              </Link>
-            </div>
+              Admin Dashboard
+            </NavLink>
           )}
         </div>
       )}
